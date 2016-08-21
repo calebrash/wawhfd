@@ -1,0 +1,82 @@
+body {
+    color: $black;
+    * {
+        margin: 0;
+        box-sizing: border-box;
+    }
+    * + * {
+        margin-top: 1.5em;
+    }
+}
+
+a {
+    border-bottom: 1px solid $gray-dark;
+    color: $gray-dark;
+    text-decoration: none;
+    &:hover {
+        color: $gray-medium-dark;
+    }
+}
+
+.row {
+    float: left;
+    clear: left;
+    width: 100%;
+}
+
+.btn {
+    display: inline-block;
+    border: 1px solid $gray-medium;
+    padding: 4px $padding-small;
+    background: $gray-light;
+    color: $gray-dark;
+    outline: none;
+    &:hover {
+        color: $black;
+    }
+}
+
+.btn-link {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    color: $gray-dark;
+    background: transparent;
+    outline: none;
+    &:hover {
+        color: $gray-medium-dark;
+    }
+    &.disabled {
+        pointer-events: none;
+        opacity: 0.3;
+    }
+}
+
+.logo {
+    $logo-size: 100px;
+    display: block;
+    position: fixed;
+    top: $padding-large;
+    left: $padding-large;
+    width: $logo-size;
+    height: $logo-size;
+    line-height: $logo-size;
+    text-align: center;
+    background: $black;
+    color: $white;
+    &:hover {
+        background: $gray-dark;
+        color: $white;
+    }
+}
+
+input[type=text] {
+    width: 100%;
+    height: 30px;
+    padding: 0 ($padding-small / 2);
+    border: 1px solid $gray-medium;
+    outline: none;
+    &:focus {
+        border-color: $gray-dark;
+    }
+}

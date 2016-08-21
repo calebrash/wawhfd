@@ -1,0 +1,38 @@
+.recipes {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    margin: 0;
+    height: 100%;
+    border-left: 1px solid $gray-medium-light;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.recipes-header {
+    padding: $padding-large;
+    border-bottom: 1px solid $gray-medium-light;
+    overflow: hidden;
+    button {
+        float: right;
+        margin-top: 9px;
+    }
+    h2 {
+        float: left;
+        margin: 0;
+    }
+}
+
+.recipes-add {
+    margin: 0;
+    padding: $padding-large;
+    border-bottom: 1px solid $gray-medium-light;
+    overflow: hidden;
+    .row {
+        margin-top: $padding-small;
+    }
+    .btn {
+        margin-right: $padding-small;
+    }
+}
