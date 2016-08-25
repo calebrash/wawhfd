@@ -57,11 +57,13 @@
 	
 	var _app = __webpack_require__(/*! ./components/app */ 175);
 	
+	var _app2 = _interopRequireDefault(_app);
+	
 	__webpack_require__(/*! ../sass/index.scss */ 179);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	(0, _reactDom.render)(_react2.default.createElement(_app.App, null), document.getElementById('app'));
+	(0, _reactDom.render)(_react2.default.createElement(_app2.default, null), document.getElementById('app'));
 
 /***/ },
 /* 1 */
@@ -22003,7 +22005,8 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	exports.App = undefined;
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _react = __webpack_require__(/*! react */ 1);
 	
@@ -22023,43 +22026,74 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	var App = exports.App = _react2.default.createClass({
-	    displayName: 'App',
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	    getInitialState: function getInitialState() {
-	        return {
-	            requestedData: false,
-	            calenderData: [],
-	            recipeData: []
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var App = function (_Component) {
+	    _inherits(App, _Component);
+	
+	    function App(props) {
+	        _classCallCheck(this, App);
+	
+	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(App).call(this, props));
+	
+	        _this.state = {
+	            calenderData: null,
+	            recipeData: null
 	        };
-	    },
-	    componentDidMount: function componentDidMount() {
-	        var _this = this;
+	        return _this;
+	    }
 	
-	        _api2.default.get('dates').catch(function () {
-	            return _this.setState({
-	                requestedData: true
-	            });
-	        }).then(function (response) {
-	            return _this.setState({
-	                requestedData: true,
-	                calenderData: response
-	            });
-	        });
+	    _createClass(App, [{
+	        key: 'componentDidMount',
+	        value: function componentDidMount() {
+	            var _this2 = this;
 	
-	        _api2.default.get('recipes').catch(function () {
-	            return _this.setState({
-	                requestedData: true
+	            _api2.default.get('dates').then(function (response) {
+	                return _this2.setState({
+	                    calenderData: response
+	                });
 	            });
-	        }).then(function (response) {
-	            return _this.setState({
-	                requestedData: true,
-	                recipeData: response
+	
+	            _api2.default.get('recipes').then(function (response) {
+	                return _this2.setState({
+	                    requestedData: true,
+	                    recipeData: response
+	                });
 	            });
-	        });
-	    },
-	    render: function render() {
-	        if (this.state.calenderData.length) {
+	        }
+	    }, {
+	        key: 'getCalender',
+	        value: function getCalender() {
+	            if (this.state.calenderData !== null) {
+	                return _react2.default.createElement(_calender2.default, { data: this.state.calenderData });
+	            } else {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'calender' },
+	                    'loading...'
+	                );
+	            }
+	        }
+	    }, {
+	        key: 'getRecipes',
+	        value: function getRecipes() {
+	            if (this.state.recipeData !== null) {
+	                return _react2.default.createElement(_recipes2.default, { data: this.state.recipeData });
+	            } else {
+	                return _react2.default.createElement(
+	                    'div',
+	                    { className: 'recipes loading' },
+	                    'loading...'
+	                );
+	            }
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
 	            return _react2.default.createElement(
 	                'div',
 	                null,
@@ -22068,18 +22102,16 @@
 	                    { href: '/', className: 'logo' },
 	                    'C8O'
 	                ),
-	                _react2.default.createElement(_calender2.default, { data: this.state.calenderData }),
-	                _react2.default.createElement(_recipes2.default, { data: this.state.recipeData })
-	            );
-	        } else {
-	            return _react2.default.createElement(
-	                'div',
-	                null,
-	                'loading...'
+	                this.getCalender(),
+	                this.getRecipes()
 	            );
 	        }
-	    }
-	});
+	    }]);
+	
+	    return App;
+	}(_react.Component);
+	
+	exports.default = App;
 
 /***/ },
 /* 176 */
@@ -22093,41 +22125,49 @@
 	Object.defineProperty(exports, "__esModule", {
 	    value: true
 	});
-	var params = {
-	    toString: function toString(dict) {
-	        var result = '';
-	        for (var key in dict) {
-	            result += key + '=' + dict[key];
-	        }
-	        return result;
-	    }
+	function paramsToString(dict) {
+	    return Object.keys(dict).map(function (d) {
+	        return d + '=' + encodeURIComponent(dict[d]);
+	    }).join('&');
 	};
+	
+	function makeRequest(endpoint, method, data) {
+	    return new Promise(function (resolve, reject) {
+	        var xhr = new XMLHttpRequest();
+	        var url = '/api/' + endpoint + '/';
+	        var params = null;
+	
+	        if (data) {
+	            params = paramsToString(data);
+	        }
+	
+	        xhr.open(method, url, true);
+	        if (method === 'POST') {
+	            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	        }
+	        xhr.send(params);
+	
+	        var getResponse = function getResponse() {
+	            return JSON.parse(xhr.responseText);
+	        };
+	        xhr.addEventListener('load', function () {
+	            return resolve(getResponse());
+	        });
+	        xhr.addEventListener('error', function () {
+	            return reject(getResponse());
+	        });
+	        xhr.addEventListener('abort', function () {
+	            return reject(getResponse());
+	        });
+	    });
+	}
 	
 	var api = {
 	    get: function get(endpoint, data) {
-	        return new Promise(function (resolve, reject) {
-	            var xhr = new XMLHttpRequest();
-	            var url = '/api/' + endpoint + '/';
-	            if (data) {
-	                url = url + '?' + params.toString(data);
-	            }
-	
-	            xhr.open('GET', url);
-	            xhr.send();
-	
-	            var getResponse = function getResponse() {
-	                return JSON.parse(xhr.responseText);
-	            };
-	            xhr.addEventListener('load', function () {
-	                return resolve(getResponse());
-	            });
-	            xhr.addEventListener('error', function () {
-	                return reject(getResponse());
-	            });
-	            xhr.addEventListener('abort', function () {
-	                return reject(getResponse());
-	            });
-	        });
+	        return makeRequest(endpoint, 'GET', data);
+	    },
+	    post: function post(endpoint, data) {
+	        return makeRequest(endpoint, 'POST', data);
 	    }
 	};
 	
@@ -22220,7 +22260,7 @@
 	                _react2.default.createElement(
 	                    "p",
 	                    null,
-	                    this.props.data.content
+	                    this.props.data.description
 	                )
 	            );
 	        }
@@ -22248,13 +22288,28 @@
 	
 	var _react2 = _interopRequireDefault(_react);
 	
+	var _api = __webpack_require__(/*! ../api */ 176);
+	
+	var _api2 = _interopRequireDefault(_api);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var canonicalRecipes = void 0;
+	var currentFilterText = '';
+	var filteredCanonicalRecipes = function filteredCanonicalRecipes() {
+	    return canonicalRecipes.filter(function (recipe) {
+	        var searchText = (recipe.name + ' ' + recipe.description).toLowerCase();
+	        return searchText.indexOf(currentFilterText) >= 0;
+	    });
+	};
 	
 	var RecipeList = function (_Component) {
 	    _inherits(RecipeList, _Component);
@@ -22265,14 +22320,24 @@
 	        var _this = _possibleConstructorReturn(this, Object.getPrototypeOf(RecipeList).call(this, props));
 	
 	        _this.state = {
-	            recipes: _this.props.data,
+	            recipes: props.data,
 	            isAdding: false
 	        };
+	        _this.recipeStore = _this.getRecipeStore();
 	        _this.startAdding = _this.startAdding.bind(_this);
+	        canonicalRecipes = props.data;
 	        return _this;
 	    }
 	
 	    _createClass(RecipeList, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            this.setState({
+	                recipes: props.data
+	            });
+	            canonicalRecipes = props.data;
+	        }
+	    }, {
 	        key: 'startAdding',
 	        value: function startAdding() {
 	            this.setState({
@@ -22280,8 +22345,8 @@
 	            });
 	        }
 	    }, {
-	        key: 'recipeStore',
-	        value: function recipeStore() {
+	        key: 'getRecipeStore',
+	        value: function getRecipeStore() {
 	            var _this2 = this;
 	
 	            return {
@@ -22291,13 +22356,26 @@
 	                    });
 	                },
 	                add: function add(recipe) {
-	                    var recipes = _this2.state.recipes;
-	                    recipe.id = recipes.length;
-	                    recipe.key = btoa(Math.random() * 1000);
-	                    recipes.push(recipe);
+	                    _api2.default.post('recipes/add', recipe).then(function (response) {
+	                        canonicalRecipes = response;
+	                        _this2.setState({
+	                            recipes: canonicalRecipes,
+	                            isAdding: false
+	                        });
+	                    });
+	                },
+	                edit: function edit(recipe) {
+	                    _api2.default.post('recipes/' + recipe.id + '/edit', recipe).then(function (response) {
+	                        canonicalRecipes = response;
+	                        _this2.setState({
+	                            recipes: filteredCanonicalRecipes()
+	                        });
+	                    });
+	                },
+	                search: function search(text) {
+	                    currentFilterText = text.toLowerCase();
 	                    _this2.setState({
-	                        recipes: recipes,
-	                        isAdding: false
+	                        recipes: filteredCanonicalRecipes()
 	                    });
 	                }
 	            };
@@ -22306,15 +22384,17 @@
 	        key: 'getAddRecipeForm',
 	        value: function getAddRecipeForm() {
 	            if (this.state.isAdding) {
-	                return _react2.default.createElement(AddRecipeForm, { recipeStore: this.recipeStore() });
+	                return _react2.default.createElement(AddRecipeForm, { recipeStore: this.recipeStore });
 	            }
 	            return '';
 	        }
 	    }, {
 	        key: 'getRecipeItems',
 	        value: function getRecipeItems() {
+	            var _this3 = this;
+	
 	            return this.state.recipes.map(function (d) {
-	                return _react2.default.createElement(RecipeItem, { data: d, key: d.key });
+	                return _react2.default.createElement(RecipeItem, { data: d, key: d.key, recipeStore: _this3.recipeStore });
 	            });
 	        }
 	    }, {
@@ -22347,14 +22427,10 @@
 	                    )
 	                ),
 	                this.getAddRecipeForm(),
-	                _react2.default.createElement(
-	                    'div',
-	                    { className: 'recipe-search' },
-	                    _react2.default.createElement('input', { type: 'text' })
-	                ),
+	                _react2.default.createElement(RecipeSearchInput, { recipeStore: this.recipeStore }),
 	                _react2.default.createElement(
 	                    'ul',
-	                    null,
+	                    { className: 'recipe-list' },
 	                    this.getRecipeItems()
 	                )
 	            );
@@ -22372,31 +22448,33 @@
 	    function AddRecipeForm(props) {
 	        _classCallCheck(this, AddRecipeForm);
 	
-	        var _this3 = _possibleConstructorReturn(this, Object.getPrototypeOf(AddRecipeForm).call(this, props));
+	        var _this4 = _possibleConstructorReturn(this, Object.getPrototypeOf(AddRecipeForm).call(this, props));
 	
-	        _this3.state = {
-	            name: ''
+	        _this4.state = {
+	            name: '',
+	            description: '',
+	            link: ''
 	        };
-	        _this3.cancelAdding = _this3.cancelAdding.bind(_this3);
-	        _this3.onInputName = _this3.onInputName.bind(_this3);
-	        _this3.onSubmit = _this3.onSubmit.bind(_this3);
-	        return _this3;
+	        _this4.cancelAdding = _this4.cancelAdding.bind(_this4);
+	        _this4.inputHandler = _this4.inputHandler.bind(_this4);
+	        _this4.onSubmit = _this4.onSubmit.bind(_this4);
+	        return _this4;
 	    }
 	
 	    _createClass(AddRecipeForm, [{
 	        key: 'onSubmit',
 	        value: function onSubmit(e) {
 	            e.preventDefault();
-	            this.props.recipeStore.add({
-	                name: this.state.name
-	            });
+	            this.props.recipeStore.add(this.state);
 	        }
 	    }, {
-	        key: 'onInputName',
-	        value: function onInputName(e) {
-	            this.setState({
-	                name: e.target.value
-	            });
+	        key: 'inputHandler',
+	        value: function inputHandler(field) {
+	            var _this5 = this;
+	
+	            return function (e) {
+	                _this5.setState(_defineProperty({}, field, e.target.value));
+	            };
 	        }
 	    }, {
 	        key: 'cancelAdding',
@@ -22408,8 +22486,25 @@
 	        value: function render() {
 	            return _react2.default.createElement(
 	                'form',
-	                { action: '/api/recipe/add/', method: 'POST', onSubmit: this.onSubmit, className: 'recipes-add' },
-	                _react2.default.createElement('input', { type: 'text', placeholder: 'name', value: this.state.name, onInput: this.onInputName }),
+	                { action: '#', method: 'POST', onSubmit: this.onSubmit, className: 'recipes-add' },
+	                _react2.default.createElement(
+	                    'label',
+	                    { htmlFor: 'recipe-new-name' },
+	                    'Name'
+	                ),
+	                _react2.default.createElement('input', { type: 'text', id: 'recipe-new-name', placeholder: 'name', value: this.state.name, onChange: this.inputHandler('name'), autoComplete: 'off' }),
+	                _react2.default.createElement(
+	                    'label',
+	                    { htmlFor: 'recipe-new-description' },
+	                    'Description'
+	                ),
+	                _react2.default.createElement('input', { type: 'text', id: 'recipe-new-description', placeholder: 'description', value: this.state.description, onChange: this.inputHandler('description'), autoComplete: 'off' }),
+	                _react2.default.createElement(
+	                    'label',
+	                    { htmlFor: 'recipe-new-link' },
+	                    'Link'
+	                ),
+	                _react2.default.createElement('input', { type: 'text', id: 'recipe-new-link', placeholder: 'link', value: this.state.link, onChange: this.inputHandler('link'), autoComplete: 'off' }),
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'row' },
@@ -22431,58 +22526,191 @@
 	    return AddRecipeForm;
 	}(_react.Component);
 	
-	var RecipeItem = _react2.default.createClass({
-	    displayName: 'RecipeItem',
+	var RecipeSearchInput = function (_Component3) {
+	    _inherits(RecipeSearchInput, _Component3);
 	
-	    onSubmit: function onSubmit() {
-	        console.log('SUBMIT');
-	    },
-	    startEditing: function startEditing() {
-	        this.setState({
-	            isEditing: true
-	        });
-	    },
-	    cancelEditing: function cancelEditing() {
-	        this.setState({
-	            isEditing: false
-	        });
-	    },
-	    getInitialState: function getInitialState() {
-	        return {
-	            isEditing: false
+	    function RecipeSearchInput(props) {
+	        _classCallCheck(this, RecipeSearchInput);
+	
+	        var _this6 = _possibleConstructorReturn(this, Object.getPrototypeOf(RecipeSearchInput).call(this, props));
+	
+	        _this6.state = {
+	            value: ''
 	        };
-	    },
-	    render: function render() {
-	        if (this.state.isEditing) {
-	            var formUrl = '/api/recipe/' + this.props.data.id + '/edit/';
+	        _this6.onInput = _this6.onInput.bind(_this6);
+	        return _this6;
+	    }
+	
+	    _createClass(RecipeSearchInput, [{
+	        key: 'onInput',
+	        value: function onInput(e) {
+	            var value = e.target.value;
+	            this.setState({
+	                value: value
+	            });
+	            this.props.recipeStore.search(value);
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
 	            return _react2.default.createElement(
-	                'li',
-	                { className: 'recipe row form' },
-	                _react2.default.createElement(
-	                    'form',
-	                    { action: formUrl, method: 'POST', onSubmit: this.onSubmit },
-	                    _react2.default.createElement('input', { type: 'text', name: this.props.data.name }),
-	                    _react2.default.createElement(
-	                        'button',
-	                        { className: 'btn' },
-	                        'Save'
-	                    ),
-	                    _react2.default.createElement(
-	                        'a',
-	                        { href: '#', className: 'btn', onClick: this.cancelEditing },
-	                        'Cancel'
-	                    )
-	                )
-	            );
-	        } else {
-	            return _react2.default.createElement(
-	                'li',
-	                { className: 'recipe row', onClick: this.startEditing },
-	                this.props.data.name
+	                'div',
+	                { className: 'recipe-search' },
+	                _react2.default.createElement('input', { type: 'text', placeholder: 'Search', value: this.state.value, onInput: this.onInput, autoComplete: 'off' })
 	            );
 	        }
+	    }]);
+	
+	    return RecipeSearchInput;
+	}(_react.Component);
+	
+	var RecipeItem = function (_Component4) {
+	    _inherits(RecipeItem, _Component4);
+	
+	    function RecipeItem(props) {
+	        _classCallCheck(this, RecipeItem);
+	
+	        var _this7 = _possibleConstructorReturn(this, Object.getPrototypeOf(RecipeItem).call(this, props));
+	
+	        _this7.state = _this7.props.data;
+	        _this7.state.isEditing = false;
+	
+	        _this7.onSubmit = _this7.onSubmit.bind(_this7);
+	        _this7.startEditing = _this7.startEditing.bind(_this7);
+	        _this7.cancelEditing = _this7.cancelEditing.bind(_this7);
+	        _this7.inputHandler = _this7.inputHandler.bind(_this7);
+	        return _this7;
 	    }
-	});
+	
+	    _createClass(RecipeItem, [{
+	        key: 'onSubmit',
+	        value: function onSubmit(e) {
+	            e.preventDefault();
+	            this.setState({
+	                isEditing: false
+	            });
+	            this.props.recipeStore.edit(this.state);
+	        }
+	    }, {
+	        key: 'inputHandler',
+	        value: function inputHandler(field) {
+	            var _this8 = this;
+	
+	            return function (e) {
+	                var state = {};
+	                state[field] = e.target.value;
+	                _this8.setState(state);
+	            };
+	        }
+	    }, {
+	        key: 'onClickLink',
+	        value: function onClickLink(e) {
+	            e.stopPropagation();
+	        }
+	    }, {
+	        key: 'startEditing',
+	        value: function startEditing() {
+	            this.setState({
+	                isEditing: true
+	            });
+	        }
+	    }, {
+	        key: 'cancelEditing',
+	        value: function cancelEditing() {
+	            this.setState({
+	                isEditing: false
+	            });
+	        }
+	    }, {
+	        key: 'getDescription',
+	        value: function getDescription() {
+	            if (this.state.description) {
+	                return _react2.default.createElement(
+	                    'p',
+	                    { className: 'description' },
+	                    this.state.description
+	                );
+	            }
+	            return '';
+	        }
+	    }, {
+	        key: 'getLink',
+	        value: function getLink() {
+	            if (this.state.link) {
+	                return _react2.default.createElement(
+	                    'p',
+	                    { className: 'link' },
+	                    _react2.default.createElement(
+	                        'a',
+	                        { href: this.state.link, onClick: this.onClickLink, target: '_blank' },
+	                        this.state.link
+	                    )
+	                );
+	            }
+	            return '';
+	        }
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            if (this.state.isEditing) {
+	                return _react2.default.createElement(
+	                    'li',
+	                    { className: 'recipe row form' },
+	                    _react2.default.createElement(
+	                        'form',
+	                        { action: '#', method: 'POST', onSubmit: this.onSubmit },
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'recipe-' + this.state.id + '-name' },
+	                            'Name'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', id: 'recipe-' + this.state.id + '-name', placeholder: 'Name', value: this.state.name, onChange: this.inputHandler('name'), autoComplete: 'off' }),
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'recipe-' + this.state.id + '-description' },
+	                            'Description'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', id: 'recipe-' + this.state.id + '-description', placeholder: 'description', value: this.state.description || '', onChange: this.inputHandler('description'), autoComplete: 'off' }),
+	                        _react2.default.createElement(
+	                            'label',
+	                            { htmlFor: 'recipe-' + this.state.id + '-link' },
+	                            'Link'
+	                        ),
+	                        _react2.default.createElement('input', { type: 'text', id: 'recipe-' + this.state.id + '-link', placeholder: 'Link', value: this.state.link || '', onChange: this.inputHandler('link'), autoComplete: 'off' }),
+	                        _react2.default.createElement(
+	                            'div',
+	                            { className: 'row' },
+	                            _react2.default.createElement(
+	                                'button',
+	                                { className: 'btn' },
+	                                'Save'
+	                            ),
+	                            _react2.default.createElement(
+	                                'a',
+	                                { href: '#', className: 'btn-link', onClick: this.cancelEditing },
+	                                'Cancel'
+	                            )
+	                        )
+	                    )
+	                );
+	            } else {
+	                return _react2.default.createElement(
+	                    'li',
+	                    { className: 'recipe row', onClick: this.startEditing },
+	                    _react2.default.createElement(
+	                        'h4',
+	                        null,
+	                        this.props.data.name
+	                    ),
+	                    this.getDescription(),
+	                    this.getLink()
+	                );
+	            }
+	        }
+	    }]);
+
+	    return RecipeItem;
+	}(_react.Component);
 
 /***/ },
 /* 179 */
@@ -22525,7 +22753,7 @@
 	
 	
 	// module
-	exports.push([module.id, "/*! normalize.scss v0.1.0 | MIT License | based on git.io/normalize */\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS text size adjust after orientation change, without disabling\n *    user zoom.\n */\nhtml {\n  font-family: sans-serif;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/**\n * Remove default margin.\n */\nbody {\n  margin: 0; }\n\n/* HTML5 display definitions\n   ========================================================================== */\n/**\n * Correct `block` display not defined for any HTML5 element in IE 8/9.\n * Correct `block` display not defined for `details` or `summary` in IE 10/11\n * and Firefox.\n * Correct `block` display not defined for `main` in IE 11.\n */\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nhgroup,\nmain,\nmenu,\nnav,\nsection,\nsummary {\n  display: block; }\n\n/**\n * 1. Correct `inline-block` display not defined in IE 8/9.\n * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.\n */\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Address `[hidden]` styling not present in IE 8/9/10.\n * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.\n */\n[hidden],\ntemplate {\n  display: none; }\n\n/* Links\n   ========================================================================== */\n/**\n * Remove the gray background color from active links in IE 10.\n */\na {\n  background-color: transparent; }\n\n/**\n * Improve readability when focused and also mouse hovered in all browsers.\n */\na:active,\na:hover {\n  outline: 0; }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * Address styling not present in IE 8/9/10/11, Safari, and Chrome.\n */\nabbr[title] {\n  border-bottom: 1px dotted; }\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.\n */\nb,\nstrong {\n  font-weight: bold; }\n\n/**\n * Address styling not present in Safari and Chrome.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari, and Chrome.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/**\n * Address styling not present in IE 8/9.\n */\nmark {\n  background: #ff0;\n  color: #000; }\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsup {\n  top: -0.5em; }\n\nsub {\n  bottom: -0.25em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Remove border when inside `a` element in IE 8/9/10.\n */\nimg {\n  border: 0; }\n\n/**\n * Correct overflow not hidden in IE 9/10/11.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Address margin not present in IE 8/9 and Safari.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * Address differences between Firefox and other browsers.\n */\nhr {\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  height: 0; }\n\n/**\n * Contain overflow in all browsers.\n */\npre {\n  overflow: auto; }\n\n/**\n * Address odd `em`-unit font size rendering in all browsers.\n */\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace;\n  font-size: 1em; }\n\n/* Forms\n   ========================================================================== */\n/**\n * Known limitation: by default, Chrome and Safari on OS X allow very limited\n * styling of `select`, unless a `border` property is set.\n */\n/**\n * 1. Correct color not being inherited.\n *    Known issue: affects color of disabled elements.\n * 2. Correct font properties not being inherited.\n * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  color: inherit;\n  /* 1 */\n  font: inherit;\n  /* 2 */\n  margin: 0;\n  /* 3 */ }\n\n/**\n * Address `overflow` set to `hidden` in IE 8/9/10/11.\n */\nbutton {\n  overflow: visible; }\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.\n * Correct `select` style inheritance in Firefox.\n */\nbutton,\nselect {\n  text-transform: none; }\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\nbutton,\nhtml input[type=\"button\"],\ninput[type=\"reset\"],\ninput[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */\n  cursor: pointer;\n  /* 3 */ }\n\n/**\n * Re-set default cursor for disabled elements.\n */\nbutton[disabled],\nhtml input[disabled] {\n  cursor: default; }\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\nbutton::-moz-focus-inner,\ninput::-moz-focus-inner {\n  border: 0;\n  padding: 0; }\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\ninput {\n  line-height: normal; }\n\n/**\n * It's recommended that you don't attempt to style these elements.\n * Firefox's implementation doesn't respect box-sizing, padding, or width.\n *\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Fix the cursor style for Chrome's increment/decrement buttons. For certain\n * `font-size` values of the `input`, it causes the cursor style of the\n * decrement button to change from `default` to `text`.\n */\ninput[type=\"number\"]::-webkit-inner-spin-button,\ninput[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari and Chrome\n *    (include `-moz` to future-proof).\n */\ninput[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  -moz-box-sizing: content-box;\n  -webkit-box-sizing: content-box;\n  /* 2 */\n  box-sizing: content-box; }\n\n/**\n * Remove inner padding and search cancel button in Safari and Chrome on OS X.\n * Safari (but not Chrome) clips the cancel button when the search input has\n * padding (and `textfield` appearance).\n */\ninput[type=\"search\"]::-webkit-search-cancel-button,\ninput[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * Define consistent border, margin, and padding.\n */\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em; }\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9/10/11.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\nlegend {\n  border: 0;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Remove default vertical scrollbar in IE 8/9/10/11.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * Don't inherit the `font-weight` (applied by a rule above).\n * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.\n */\noptgroup {\n  font-weight: bold; }\n\n/* Tables\n   ========================================================================== */\n/**\n * Remove most spacing between table cells.\n */\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\ntd,\nth {\n  padding: 0; }\n\nbody {\n  color: #333; }\n  body * {\n    margin: 0;\n    box-sizing: border-box; }\n  body * + * {\n    margin-top: 1.5em; }\n\na {\n  border-bottom: 1px solid #666;\n  color: #666;\n  text-decoration: none; }\n  a:hover {\n    color: #888; }\n\n.row {\n  float: left;\n  clear: left;\n  width: 100%; }\n\n.btn {\n  display: inline-block;\n  border: 1px solid #aaa;\n  padding: 4px 14px;\n  background: #eee;\n  color: #666;\n  outline: none; }\n  .btn:hover {\n    color: #333; }\n\n.btn-link {\n  padding: 0;\n  margin: 0;\n  border: 0;\n  color: #666;\n  background: transparent;\n  outline: none; }\n  .btn-link:hover {\n    color: #888; }\n  .btn-link.disabled {\n    pointer-events: none;\n    opacity: 0.3; }\n\n.logo {\n  display: block;\n  position: fixed;\n  top: 22px;\n  left: 22px;\n  width: 100px;\n  height: 100px;\n  line-height: 100px;\n  text-align: center;\n  background: #333;\n  color: #fff; }\n  .logo:hover {\n    background: #666;\n    color: #fff; }\n\ninput[type=text] {\n  width: 100%;\n  height: 30px;\n  padding: 0 7px;\n  border: 1px solid #aaa;\n  outline: none; }\n  input[type=text]:focus {\n    border-color: #666; }\n\n.calender {\n  width: 800px;\n  margin: 22px auto; }\n\n.recipes {\n  position: fixed;\n  top: 0;\n  right: 0;\n  width: 300px;\n  margin: 0;\n  height: 100%;\n  border-left: 1px solid #ccc;\n  overflow-y: auto;\n  overflow-x: hidden; }\n\n.recipes-header {\n  padding: 22px;\n  border-bottom: 1px solid #ccc;\n  overflow: hidden; }\n  .recipes-header button {\n    float: right;\n    margin-top: 9px; }\n  .recipes-header h2 {\n    float: left;\n    margin: 0; }\n\n.recipes-add {\n  margin: 0;\n  padding: 22px;\n  border-bottom: 1px solid #ccc;\n  overflow: hidden; }\n  .recipes-add .row {\n    margin-top: 14px; }\n  .recipes-add .btn {\n    margin-right: 14px; }\n", ""]);
+	exports.push([module.id, "/*! normalize.scss v0.1.0 | MIT License | based on git.io/normalize */\n/**\n * 1. Set default font family to sans-serif.\n * 2. Prevent iOS text size adjust after orientation change, without disabling\n *    user zoom.\n */\nhtml {\n  font-family: sans-serif;\n  /* 1 */\n  -ms-text-size-adjust: 100%;\n  /* 2 */\n  -webkit-text-size-adjust: 100%;\n  /* 2 */ }\n\n/**\n * Remove default margin.\n */\nbody {\n  margin: 0; }\n\n/* HTML5 display definitions\n   ========================================================================== */\n/**\n * Correct `block` display not defined for any HTML5 element in IE 8/9.\n * Correct `block` display not defined for `details` or `summary` in IE 10/11\n * and Firefox.\n * Correct `block` display not defined for `main` in IE 11.\n */\narticle,\naside,\ndetails,\nfigcaption,\nfigure,\nfooter,\nheader,\nhgroup,\nmain,\nmenu,\nnav,\nsection,\nsummary {\n  display: block; }\n\n/**\n * 1. Correct `inline-block` display not defined in IE 8/9.\n * 2. Normalize vertical alignment of `progress` in Chrome, Firefox, and Opera.\n */\naudio,\ncanvas,\nprogress,\nvideo {\n  display: inline-block;\n  /* 1 */\n  vertical-align: baseline;\n  /* 2 */ }\n\n/**\n * Prevent modern browsers from displaying `audio` without controls.\n * Remove excess height in iOS 5 devices.\n */\naudio:not([controls]) {\n  display: none;\n  height: 0; }\n\n/**\n * Address `[hidden]` styling not present in IE 8/9/10.\n * Hide the `template` element in IE 8/9/11, Safari, and Firefox < 22.\n */\n[hidden],\ntemplate {\n  display: none; }\n\n/* Links\n   ========================================================================== */\n/**\n * Remove the gray background color from active links in IE 10.\n */\na {\n  background-color: transparent; }\n\n/**\n * Improve readability when focused and also mouse hovered in all browsers.\n */\na:active,\na:hover {\n  outline: 0; }\n\n/* Text-level semantics\n   ========================================================================== */\n/**\n * Address styling not present in IE 8/9/10/11, Safari, and Chrome.\n */\nabbr[title] {\n  border-bottom: 1px dotted; }\n\n/**\n * Address style set to `bolder` in Firefox 4+, Safari, and Chrome.\n */\nb,\nstrong {\n  font-weight: bold; }\n\n/**\n * Address styling not present in Safari and Chrome.\n */\ndfn {\n  font-style: italic; }\n\n/**\n * Address variable `h1` font-size and margin within `section` and `article`\n * contexts in Firefox 4+, Safari, and Chrome.\n */\nh1 {\n  font-size: 2em;\n  margin: 0.67em 0; }\n\n/**\n * Address styling not present in IE 8/9.\n */\nmark {\n  background: #ff0;\n  color: #000; }\n\n/**\n * Address inconsistent and variable font size in all browsers.\n */\nsmall {\n  font-size: 80%; }\n\n/**\n * Prevent `sub` and `sup` affecting `line-height` in all browsers.\n */\nsub,\nsup {\n  font-size: 75%;\n  line-height: 0;\n  position: relative;\n  vertical-align: baseline; }\n\nsup {\n  top: -0.5em; }\n\nsub {\n  bottom: -0.25em; }\n\n/* Embedded content\n   ========================================================================== */\n/**\n * Remove border when inside `a` element in IE 8/9/10.\n */\nimg {\n  border: 0; }\n\n/**\n * Correct overflow not hidden in IE 9/10/11.\n */\nsvg:not(:root) {\n  overflow: hidden; }\n\n/* Grouping content\n   ========================================================================== */\n/**\n * Address margin not present in IE 8/9 and Safari.\n */\nfigure {\n  margin: 1em 40px; }\n\n/**\n * Address differences between Firefox and other browsers.\n */\nhr {\n  -moz-box-sizing: content-box;\n  box-sizing: content-box;\n  height: 0; }\n\n/**\n * Contain overflow in all browsers.\n */\npre {\n  overflow: auto; }\n\n/**\n * Address odd `em`-unit font size rendering in all browsers.\n */\ncode,\nkbd,\npre,\nsamp {\n  font-family: monospace, monospace;\n  font-size: 1em; }\n\n/* Forms\n   ========================================================================== */\n/**\n * Known limitation: by default, Chrome and Safari on OS X allow very limited\n * styling of `select`, unless a `border` property is set.\n */\n/**\n * 1. Correct color not being inherited.\n *    Known issue: affects color of disabled elements.\n * 2. Correct font properties not being inherited.\n * 3. Address margins set differently in Firefox 4+, Safari, and Chrome.\n */\nbutton,\ninput,\noptgroup,\nselect,\ntextarea {\n  color: inherit;\n  /* 1 */\n  font: inherit;\n  /* 2 */\n  margin: 0;\n  /* 3 */ }\n\n/**\n * Address `overflow` set to `hidden` in IE 8/9/10/11.\n */\nbutton {\n  overflow: visible; }\n\n/**\n * Address inconsistent `text-transform` inheritance for `button` and `select`.\n * All other form control elements do not inherit `text-transform` values.\n * Correct `button` style inheritance in Firefox, IE 8/9/10/11, and Opera.\n * Correct `select` style inheritance in Firefox.\n */\nbutton,\nselect {\n  text-transform: none; }\n\n/**\n * 1. Avoid the WebKit bug in Android 4.0.* where (2) destroys native `audio`\n *    and `video` controls.\n * 2. Correct inability to style clickable `input` types in iOS.\n * 3. Improve usability and consistency of cursor style between image-type\n *    `input` and others.\n */\nbutton,\nhtml input[type=\"button\"],\ninput[type=\"reset\"],\ninput[type=\"submit\"] {\n  -webkit-appearance: button;\n  /* 2 */\n  cursor: pointer;\n  /* 3 */ }\n\n/**\n * Re-set default cursor for disabled elements.\n */\nbutton[disabled],\nhtml input[disabled] {\n  cursor: default; }\n\n/**\n * Remove inner padding and border in Firefox 4+.\n */\nbutton::-moz-focus-inner,\ninput::-moz-focus-inner {\n  border: 0;\n  padding: 0; }\n\n/**\n * Address Firefox 4+ setting `line-height` on `input` using `!important` in\n * the UA stylesheet.\n */\ninput {\n  line-height: normal; }\n\n/**\n * It's recommended that you don't attempt to style these elements.\n * Firefox's implementation doesn't respect box-sizing, padding, or width.\n *\n * 1. Address box sizing set to `content-box` in IE 8/9/10.\n * 2. Remove excess padding in IE 8/9/10.\n */\ninput[type=\"checkbox\"],\ninput[type=\"radio\"] {\n  box-sizing: border-box;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Fix the cursor style for Chrome's increment/decrement buttons. For certain\n * `font-size` values of the `input`, it causes the cursor style of the\n * decrement button to change from `default` to `text`.\n */\ninput[type=\"number\"]::-webkit-inner-spin-button,\ninput[type=\"number\"]::-webkit-outer-spin-button {\n  height: auto; }\n\n/**\n * 1. Address `appearance` set to `searchfield` in Safari and Chrome.\n * 2. Address `box-sizing` set to `border-box` in Safari and Chrome\n *    (include `-moz` to future-proof).\n */\ninput[type=\"search\"] {\n  -webkit-appearance: textfield;\n  /* 1 */\n  -moz-box-sizing: content-box;\n  -webkit-box-sizing: content-box;\n  /* 2 */\n  box-sizing: content-box; }\n\n/**\n * Remove inner padding and search cancel button in Safari and Chrome on OS X.\n * Safari (but not Chrome) clips the cancel button when the search input has\n * padding (and `textfield` appearance).\n */\ninput[type=\"search\"]::-webkit-search-cancel-button,\ninput[type=\"search\"]::-webkit-search-decoration {\n  -webkit-appearance: none; }\n\n/**\n * Define consistent border, margin, and padding.\n */\nfieldset {\n  border: 1px solid #c0c0c0;\n  margin: 0 2px;\n  padding: 0.35em 0.625em 0.75em; }\n\n/**\n * 1. Correct `color` not being inherited in IE 8/9/10/11.\n * 2. Remove padding so people aren't caught out if they zero out fieldsets.\n */\nlegend {\n  border: 0;\n  /* 1 */\n  padding: 0;\n  /* 2 */ }\n\n/**\n * Remove default vertical scrollbar in IE 8/9/10/11.\n */\ntextarea {\n  overflow: auto; }\n\n/**\n * Don't inherit the `font-weight` (applied by a rule above).\n * NOTE: the default cannot safely be changed in Chrome and Safari on OS X.\n */\noptgroup {\n  font-weight: bold; }\n\n/* Tables\n   ========================================================================== */\n/**\n * Remove most spacing between table cells.\n */\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\ntd,\nth {\n  padding: 0; }\n\nbody {\n  color: #333;\n  font-size: 15px;\n  line-height: 1.3em; }\n  body * {\n    margin: 0;\n    box-sizing: border-box; }\n  body * + * {\n    margin-top: 1.5em; }\n\na {\n  border-bottom: 1px solid #666;\n  color: #666;\n  text-decoration: none; }\n  a:hover {\n    color: #888; }\n\n.row {\n  float: left;\n  clear: left;\n  width: 100%; }\n\n.btn {\n  display: inline-block;\n  border: 1px solid #aaa;\n  padding: 4px 8px;\n  background: #eee;\n  color: #666;\n  outline: none; }\n  .btn:hover {\n    color: #333; }\n\n.btn-link {\n  padding: 0;\n  margin: 0;\n  border: 0;\n  color: #666;\n  background: transparent;\n  outline: none; }\n  .btn-link:hover {\n    color: #888; }\n  .btn-link.disabled {\n    pointer-events: none;\n    opacity: 0.3; }\n\n.logo {\n  display: block;\n  position: fixed;\n  top: 22px;\n  left: 22px;\n  width: 100px;\n  height: 100px;\n  line-height: 100px;\n  text-align: center;\n  background: #333;\n  color: #fff; }\n  .logo:hover {\n    background: #666;\n    color: #fff; }\n\ninput[type=text] {\n  width: 100%;\n  height: 30px;\n  padding: 0 8px;\n  border: 1px solid #aaa;\n  outline: none; }\n  input[type=text]:focus {\n    border-color: #666; }\n\n.calender {\n  width: 800px;\n  margin: 22px auto; }\n\n.recipes {\n  position: fixed;\n  top: 0;\n  right: 0;\n  width: 300px;\n  margin: 0;\n  height: 100%;\n  border-left: 1px solid #888;\n  overflow-y: auto;\n  overflow-x: hidden; }\n  .recipes.loading {\n    text-align: center;\n    padding: 110px 14px; }\n\n.recipes-header {\n  padding: 14px;\n  border-bottom: 1px solid #888;\n  overflow: hidden; }\n  .recipes-header button {\n    float: right; }\n  .recipes-header h2 {\n    float: left;\n    margin: 0; }\n\n.recipes-add {\n  margin: 0;\n  padding: 14px;\n  border-bottom: 1px solid #888;\n  background: #eee;\n  overflow: hidden; }\n  .recipes-add .row {\n    margin-top: 8px; }\n  .recipes-add .btn {\n    margin-right: 8px;\n    background: #fff; }\n  .recipes-add label {\n    font-size: 0.8em; }\n  .recipes-add input {\n    margin: 0 0 7px 0; }\n\n.recipe-search {\n  margin: 0;\n  border-bottom: 1px solid #888; }\n  .recipe-search input {\n    height: 38px;\n    padding: 0 14px;\n    border: 0; }\n\n.recipe-list {\n  margin: 0;\n  padding: 0;\n  list-style: none; }\n  .recipe-list li {\n    margin: 0;\n    padding: 14px;\n    border-bottom: 1px solid #eee;\n    cursor: pointer; }\n    .recipe-list li.form {\n      margin-top: -1px;\n      border: 1px solid #ccc;\n      border-width: 1px 0;\n      background: #eee;\n      cursor: default;\n      z-index: 1; }\n      .recipe-list li.form .btn {\n        background: #fff; }\n    .recipe-list li * + * {\n      margin-top: 0; }\n  .recipe-list .btn {\n    margin-right: 14px; }\n  .recipe-list h4 {\n    font-weight: normal;\n    font-size: 15px; }\n  .recipe-list .description {\n    color: #aaa;\n    font-size: 0.9em; }\n  .recipe-list .link {\n    margin-top: 0;\n    font-size: 0.9em; }\n    .recipe-list .link a {\n      color: #aaa; }\n      .recipe-list .link a:hover {\n        color: #333; }\n  .recipe-list label {\n    font-size: 0.8em; }\n  .recipe-list input {\n    margin: 0 0 7px 0; }\n", ""]);
 	
 	// exports
 

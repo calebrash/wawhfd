@@ -1,5 +1,7 @@
 body {
     color: $black;
+    font-size: $base-font-size;
+    line-height: $base-line-height;
     * {
         margin: 0;
         box-sizing: border-box;
@@ -73,7 +75,7 @@ a {
 input[type=text] {
     width: 100%;
     height: 30px;
-    padding: 0 ($padding-small / 2);
+    padding: 0 $padding-small;
     border: 1px solid $gray-medium;
     outline: none;
     &:focus {

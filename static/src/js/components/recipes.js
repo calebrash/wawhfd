@@ -1,32 +1,63 @@
 import React, { Component } from 'react';
+import api from '../api';
+
+let canonicalRecipes;
+let currentFilterText = '';
+let filteredCanonicalRecipes = () => {
+    return canonicalRecipes.filter((recipe) => {
+        let searchText = (`${recipe.name} ${recipe.description}`).toLowerCase();
+        return searchText.indexOf(currentFilterText) >= 0
+    });
+};
 
 export default class RecipeList extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            recipes: this.props.data,
+            recipes: props.data,
             isAdding: false
         };
+        this.recipeStore = this.getRecipeStore();
         this.startAdding = this.startAdding.bind(this);
+        canonicalRecipes = props.data;
+    }
+    componentWillReceiveProps (props) {
+        this.setState({
+            recipes: props.data
+        });
+        canonicalRecipes = props.data;
     }
     startAdding () {
         this.setState({
             isAdding: true
         });
     }
-    recipeStore () {
+    getRecipeStore () {
         return {
             cancelAdding: () => this.setState({
                 isAdding: false
             }),
             add: (recipe) => {
-                let recipes = this.state.recipes;
-                recipe.id = recipes.length;
-                recipe.key = btoa(Math.random() * 1000);
-                recipes.push(recipe);
+                api.post('recipes/add', recipe).then((response) => {
+                    canonicalRecipes = response;
+                    this.setState({
+                        recipes: canonicalRecipes,
+                        isAdding: false
+                    })
+                });
+            },
+            edit: (recipe) => {
+                api.post(`recipes/${recipe.id}/edit`, recipe).then((response) => {
+                    canonicalRecipes = response;
+                    this.setState({
+                        recipes: filteredCanonicalRecipes()
+                    });
+                });
+            },
+            search: (text) => {
+                currentFilterText = text.toLowerCase();
                 this.setState({
-                    recipes: recipes,
-                    isAdding: false
+                    recipes: filteredCanonicalRecipes()
                 });
             }
         }
@@ -34,13 +65,13 @@ export default class RecipeList extends Component {
     getAddRecipeForm () {
         if (this.state.isAdding) {
             return (
-                <AddRecipeForm recipeStore={this.recipeStore()} />
+                <AddRecipeForm recipeStore={this.recipeStore} />
             );
         }
         return '';
     }
     getRecipeItems () {
-        return this.state.recipes.map((d) => <RecipeItem data={d} key={d.key} />);
+        return this.state.recipes.map((d) => <RecipeItem data={d} key={d.key} recipeStore={this.recipeStore} />);
     }
     getAddButtonClassName () {
         var className = 'btn-link';
@@ -57,10 +88,8 @@ export default class RecipeList extends Component {
                     <h2>Recipes</h2>
                 </header>
                 {this.getAddRecipeForm()}
-                <div className="recipe-search">
-                    <input type="text" />
-                </div>
-                <ul>
+                <RecipeSearchInput recipeStore={this.recipeStore} />
+                <ul className="recipe-list">
                     {this.getRecipeItems()}
                 </ul>
             </div>
@@ -72,30 +101,40 @@ class AddRecipeForm extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            name: ''
+            name: '',
+            description: '',
+            link: ''
         };
         this.cancelAdding = this.cancelAdding.bind(this);
-        this.onInputName = this.onInputName.bind(this);
+        this.inputHandler = this.inputHandler.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
     onSubmit (e) {
         e.preventDefault();
-        this.props.recipeStore.add({
-            name: this.state.name
-        });
+        this.props.recipeStore.add(this.state);
     }
-    onInputName (e) {
-        this.setState({
-            name: e.target.value
-        });
+    inputHandler (field) {
+        return (e) => {
+            this.setState({
+                [field]: e.target.value
+            });
+        };
     }
     cancelAdding () {
         this.props.recipeStore.cancelAdding();
     }
     render () {
         return (
-            <form action="/api/recipe/add/" method="POST" onSubmit={this.onSubmit} className="recipes-add">
-                <input type="text" placeholder="name" value={this.state.name} onInput={this.onInputName} />
+            <form action="#" method="POST" onSubmit={this.onSubmit} className="recipes-add">
+                <label htmlFor="recipe-new-name">Name</label>
+                <input type="text" id="recipe-new-name" placeholder="name" value={this.state.name} onChange={this.inputHandler('name')} autoComplete="off" />
+
+                <label htmlFor="recipe-new-description">Description</label>
+                <input type="text" id="recipe-new-description" placeholder="description" value={this.state.description} onChange={this.inputHandler('description')} autoComplete="off" />
+
+                <label htmlFor="recipe-new-link">Link</label>
+                <input type="text" id="recipe-new-link" placeholder="link" value={this.state.link} onChange={this.inputHandler('link')} autoComplete="off" />
+
                 <div className="row">
                     <button className="btn">Save</button>
                     <a href="#" className="btn-link" onClick={this.cancelAdding}>Cancel</a>
@@ -105,43 +144,116 @@ class AddRecipeForm extends Component {
     }
 }
 
-const RecipeItem = React.createClass({
-    onSubmit: function () {
-        console.log('SUBMIT');
-    },
-    startEditing: function () {
+class RecipeSearchInput extends Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            value: ''
+        };
+        this.onInput = this.onInput.bind(this);
+    }
+    onInput (e) {
+        let value = e.target.value;
+        this.setState({
+            value: value
+        });
+        this.props.recipeStore.search(value);
+    }
+    render () {
+        return (
+            <div className="recipe-search">
+                <input type="text" placeholder="Search" value={this.state.value} onInput={this.onInput} autoComplete="off" />
+            </div>
+        );
+    }
+}
+
+class RecipeItem extends Component {
+    constructor (props) {
+        super(props);
+
+        this.state = this.props.data;
+        this.state.isEditing = false;
+
+        this.onSubmit = this.onSubmit.bind(this);
+        this.startEditing = this.startEditing.bind(this);
+        this.cancelEditing = this.cancelEditing.bind(this);
+        this.inputHandler = this.inputHandler.bind(this);
+    }
+    onSubmit (e) {
+        e.preventDefault();
+        this.setState({
+            isEditing: false
+        });
+        this.props.recipeStore.edit(this.state);
+    }
+    inputHandler (field) {
+        return (e) => {
+            let state = {};
+            state[field] = e.target.value;
+            this.setState(state);
+        };
+    }
+    onClickLink (e) {
+        e.stopPropagation();
+    }
+    startEditing () {
         this.setState({
             isEditing: true
         });
-    },
-    cancelEditing: function () {
+    }
+    cancelEditing () {
         this.setState({
             isEditing: false
         });
-    },
-    getInitialState: function () {
-        return {
-            isEditing: false
-        };
-    },
-    render: function () {
+    }
+    getDescription () {
+        if (this.state.description) {
+            return <p className="description">{this.state.description}</p>
+        }
+        return '';
+    }
+    getLink () {
+        if (this.state.link) {
+            return (
+                <p className="link">
+                    <a href={this.state.link} onClick={this.onClickLink} target="_blank">
+                        {this.state.link}
+                    </a>
+                </p>
+            );
+        }
+        return '';
+    }
+    render () {
         if (this.state.isEditing) {
-            let formUrl = `/api/recipe/${this.props.data.id}/edit/`;
             return (
                 <li className="recipe row form">
-                    <form action={formUrl} method="POST" onSubmit={this.onSubmit}>
-                        <input type="text" name={this.props.data.name} />
-                        <button className="btn">Save</button>
-                        <a href="#" className="btn" onClick={this.cancelEditing}>Cancel</a>
+                    <form action="#" method="POST" onSubmit={this.onSubmit}>
+                        <label htmlFor={`recipe-${this.state.id}-name`}>Name</label>
+                        <input type="text" id={`recipe-${this.state.id}-name`} placeholder="Name" value={this.state.name} onChange={this.inputHandler('name')} autoComplete="off" />
+
+                        <label htmlFor={`recipe-${this.state.id}-description`}>Description</label>
+                        <input type="text" id={`recipe-${this.state.id}-description`} placeholder="description" value={this.state.description || ''} onChange={this.inputHandler('description')} autoComplete="off" />
+
+                        <label htmlFor={`recipe-${this.state.id}-link`}>Link</label>
+                        <input type="text" id={`recipe-${this.state.id}-link`} placeholder="Link" value={this.state.link || ''} onChange={this.inputHandler('link')} autoComplete="off" />
+
+                        <div className="row">
+                            <button className="btn">Save</button>
+                            <a href="#" className="btn-link" onClick={this.cancelEditing}>Cancel</a>
+                        </div>
                     </form>
                 </li>
             );
         } else {
             return (
                 <li className="recipe row" onClick={this.startEditing}>
-                    {this.props.data.name}
+                    <h4>{this.props.data.name}</h4>
+                    {this.getDescription()}
+                    {this.getLink()}
                 </li>
             );
         }
     }
-});
+}

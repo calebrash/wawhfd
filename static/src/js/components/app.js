@@ -5,44 +5,47 @@ import CalenderList from './calender';
 import RecipeList from './recipes';
 
 
-export const App = React.createClass({
-    getInitialState: function () {
-        return {
-            requestedData: false,
-            calenderData: [],
-            recipeData: []
+export default class App extends Component {
+    constructor (props) {
+        super(props);
+        this.state = {
+            calenderData: null,
+            recipeData: null
         };
-    },
-    componentDidMount: function () {
+    }
+    componentDidMount () {
         api.get('dates')
-            .catch(() => this.setState({
-                requestedData: true
-            }))
             .then((response) => this.setState({
-                requestedData: true,
                 calenderData: response
             }));
 
         api.get('recipes')
-            .catch(() => this.setState({
-                requestedData: true
-            }))
             .then((response) => this.setState({
                 requestedData: true,
                 recipeData: response
             }));
-    },
-    render: function () {
-        if (this.state.calenderData.length) {
-            return (
-                <div>
-                    <a href="/" className="logo">C8O</a>
-                    <CalenderList data={this.state.calenderData} />
-                    <RecipeList data={this.state.recipeData} />
-                </div>
-            );
+    }
+    getCalender () {
+        if (this.state.calenderData !== null) {
+            return <CalenderList data={this.state.calenderData} />;
         } else {
-            return <div>loading...</div>;
+            return <div className="calender">loading...</div>;
         }
     }
-});
+    getRecipes () {
+        if (this.state.recipeData !== null) {
+            return <RecipeList data={this.state.recipeData} />;
+        } else {
+            return <div className="recipes loading">loading...</div>;
+        }
+    }
+    render () {
+        return (
+            <div>
+                <a href="/" className="logo">C8O</a>
+                {this.getCalender()}
+                {this.getRecipes()}
+            </div>
+        );
+    }
+}

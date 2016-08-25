@@ -1,7 +1,12 @@
 import datetime
 import json
 import util
-from flask import Flask, render_template, jsonify
+from flask import (
+    Flask,
+    render_template,
+    request,
+    jsonify,
+)
 
 app = Flask(__name__)
 
@@ -24,52 +29,43 @@ def api_dates_list():
             'date': date,
             'date_string': date.strftime('%B %d, %Y'),
             'title': date_name,
-            'content': 'Content for item {index}'.format(index=d)
+            'description': 'Description for item {index}'.format(index=d)
         })
     return jsonify(dates)
 
-RECIPES = [{
-    'id': 1,
-    'name': 'Test recipe',
-    'content': 'This recipe is awesome',
-    'image': None,
-    'link': None,
-},{
-    'id': 2,
-    'name': 'Another recipe',
-    'content': None,
-    'image': None,
-    'link': 'https://google.com',
-}]
-
 @app.route('/api/recipes/', methods=['GET'])
 def api_recipes_list():
-    for recipe in RECIPES:
-        recipe['key'] = 'recipe-{id}'.format(id=recipe['id'])
-    return jsonify(RECIPES)
+    return jsonify(util.RECIPES)
 
 @app.route('/api/recipes/add/', methods=['POST'])
 def api_recipes_add():
-    recipe = request.form
-    recipe['id'] = len(RECIPES) + 1
-    return jsonify(recipe)
+    recipe = {
+        'id': len(util.RECIPES) + 1,
+        'name': request.form.get('name'),
+        'description': request.form.get('description'),
+        'image': None,
+        'link': request.form.get('link'),
+    }
+    recipe['key'] = util.get_key_for_id(recipe['id'])
+    util.RECIPES.insert(0, recipe)
+    return jsonify(util.RECIPES)
 
 @app.route('/api/recipes/<int:recipe_id>/edit/', methods=['POST'])
 def api_recipes_edit(recipe_id):
-    result = None
-    for recipe in RECIPES:
-        if recipe['id'] == recipe_id:
-            result = recipe
+    recipe = {
+        'id': recipe_id,
+        'key': util.get_key_for_id(recipe_id),
+        'name': request.form.get('name'),
+        'description': request.form.get('description'),
+        'image': None,
+        'link': request.form.get('link'),
+    }
+    for index, r in enumerate(util.RECIPES):
+        print('   [r] %s' % index)
+        if r['id'] == recipe['id']:
+            util.RECIPES[index] = recipe
             break
-    if result:
-        result['name'] = request.form['name']
-        result['success'] = True
-    else:
-        result = {
-            'success': False
-        }
-    return jsonify(result)
-
+    return jsonify(util.RECIPES)
 
 
 if __name__ == '__main__':

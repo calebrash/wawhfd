@@ -14,7 +14,7 @@ class CalenderItem extends Component {
         return (
             <div className="calender-item row">
                 <h2>{this.props.data.title}<small>{this.props.data.date_string}</small></h2>
-                <p>{this.props.data.content}</p>
+                <p>{this.props.data.description}</p>
             </div>
         );
     }

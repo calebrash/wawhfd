@@ -5,18 +5,21 @@
     width: 300px;
     margin: 0;
     height: 100%;
-    border-left: 1px solid $gray-medium-light;
+    border-left: 1px solid $gray-medium-dark;
     overflow-y: auto;
     overflow-x: hidden;
+    &.loading {
+        text-align: center;
+        padding: ($padding-large * 5) $padding-medium;
+    }
 }
 
 .recipes-header {
-    padding: $padding-large;
-    border-bottom: 1px solid $gray-medium-light;
+    padding: $padding-medium;
+    border-bottom: 1px solid $gray-medium-dark;
     overflow: hidden;
     button {
         float: right;
-        margin-top: 9px;
     }
     h2 {
         float: left;
@@ -26,13 +29,84 @@
 
 .recipes-add {
     margin: 0;
-    padding: $padding-large;
-    border-bottom: 1px solid $gray-medium-light;
+    padding: $padding-medium;
+    border-bottom: 1px solid $gray-medium-dark;
+    background: $gray-light;
     overflow: hidden;
     .row {
         margin-top: $padding-small;
     }
     .btn {
         margin-right: $padding-small;
+        background: $white;
+    }
+    label {
+        font-size: 0.8em;
+    }
+    input {
+        margin: 0 0 ($padding-medium / 2) 0;
+    }
+}
+
+.recipe-search {
+    margin: 0;
+    border-bottom: 1px solid $gray-medium-dark;
+    input {
+        height: 38px;
+        padding: 0 $padding-medium;
+        border: 0;
+    }
+}
+
+.recipe-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    li {
+        margin: 0;
+        padding: $padding-medium;
+        border-bottom: 1px solid $gray-light;
+        cursor: pointer;
+        &.form {
+            margin-top: -1px;
+            border: 1px solid $gray-medium-light;
+            border-width: 1px 0;
+            background: $gray-light;
+            cursor: default;
+            z-index: 1;
+            .btn {
+                background: $white;
+            }
+        }
+        * + * {
+            margin-top: 0;
+        }
+    }
+    .btn {
+        margin-right: $padding-medium;
+    }
+    h4 {
+        font-weight: normal;
+        font-size: $base-font-size;
+    }
+    .description {
+        color: $gray-medium;
+        font-size: 0.9em;
+    }
+    .link {
+        margin-top: 0;
+        font-size: 0.9em;
+        a {
+            color: $gray-medium;
+            &:hover {
+                color: $black;
+            }
+        }
+    }
+    label {
+        font-size: 0.8em;
+    }
+    input {
+        margin: 0 0 ($padding-medium / 2) 0;
     }
 }
