@@ -1,8 +1,12 @@
 import os
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+from flask_sqlalchemy import SQLAlchemy
 
-from app import app, db
+from app import app
+import config
+
+db = SQLAlchemy(app)
 
 
 migrate = Migrate(app, db)

@@ -109,4 +109,8 @@
     input {
         margin: 0 0 ($padding-medium / 2) 0;
     }
+    .btn-link.danger {
+        float: right;
+        margin-top: 5px;
+    }
 }

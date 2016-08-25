@@ -52,6 +52,10 @@ a {
         pointer-events: none;
         opacity: 0.3;
     }
+    &.danger {
+        color: $red;
+        border-color: $red;
+    }
 }
 
 .logo {

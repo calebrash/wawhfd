@@ -1,28 +1,10 @@
 def get_key_for_id(id):
     return 'recipe-{id}'.format(id=id)
 
-RECIPES = [{
-    'id': 1,
-    'key': get_key_for_id(1),
-    'name': 'Test recipe',
-    'description': 'This recipe is awesome',
-    'image': None,
-    'link': None,
-},{
-    'id': 2,
-    'key': get_key_for_id(2),
-    'name': 'Another recipe',
-    'description': None,
-    'image': None,
-    'link': 'https://google.com',
-},{
-    'id': 3,
-    'key': get_key_for_id(3),
-    'name': 'Monkey stew',
-    'description': 'Akldjfalsjdflsdaf',
-    'image': None,
-    'link': 'https://google.com',
-}]
+def json_for_model(ModelClass):
+    return [
+        m.as_dict() for m in ModelClass.query.filter_by(deleted=False).order_by(ModelClass.id.asc())
+    ]
 
 colloquial_date_lookup = (
     'Today',

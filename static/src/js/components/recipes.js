@@ -54,6 +54,14 @@ export default class RecipeList extends Component {
                     });
                 });
             },
+            delete: (recipe) => {
+                api.post(`recipes/${recipe.id}/delete`, recipe).then((response) => {
+                    canonicalRecipes = response;
+                    this.setState({
+                        recipes: filteredCanonicalRecipes()
+                    });
+                });
+            },
             search: (text) => {
                 currentFilterText = text.toLowerCase();
                 this.setState({
@@ -176,6 +184,7 @@ class RecipeItem extends Component {
         this.state.isEditing = false;
 
         this.onSubmit = this.onSubmit.bind(this);
+        this.onDelete = this.onDelete.bind(this);
         this.startEditing = this.startEditing.bind(this);
         this.cancelEditing = this.cancelEditing.bind(this);
         this.inputHandler = this.inputHandler.bind(this);
@@ -186,6 +195,9 @@ class RecipeItem extends Component {
             isEditing: false
         });
         this.props.recipeStore.edit(this.state);
+    }
+    onDelete () {
+        this.props.recipeStore.delete(this.state);
     }
     inputHandler (field) {
         return (e) => {
@@ -242,13 +254,14 @@ class RecipeItem extends Component {
                         <div className="row">
                             <button className="btn">Save</button>
                             <a href="#" className="btn-link" onClick={this.cancelEditing}>Cancel</a>
+                            <a href="#" className="btn-link danger" onClick={this.onDelete}>Delete</a>
                         </div>
                     </form>
                 </li>
             );
         } else {
             return (
-                <li className="recipe row" onClick={this.startEditing}>
+                <li className="recipe row" onClick={this.startEditing} draggable="true">
                     <h4>{this.props.data.name}</h4>
                     {this.getDescription()}
                     {this.getLink()}
