@@ -1,4 +1,23 @@
 .calender {
-    width: 800px;
+    width: 600px;
     margin: $padding-large auto;
+}
+
+.calender-item {
+    &.droppable {
+        .drop-target {
+            display: block;
+        }
+    }
+    &.drag-over {
+        .drop-target {
+            border-color: $gray-medium-dark;
+        }
+    }
+    .drop-target {
+        display: none;
+        padding: $padding-large;
+        border: 4px dashed $gray-medium-light;
+        text-align: center;
+    }
 }

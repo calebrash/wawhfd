@@ -10,7 +10,7 @@ from flask import (
 from flask_sqlalchemy import SQLAlchemy
 
 from database import init_db, db_session
-from models import Recipe
+from models import Recipe, CalenderEntry
 import config
 
 app = Flask(__name__)
@@ -27,6 +27,8 @@ def index():
 @app.route('/api/dates/', methods=['GET'])
 def api_dates_list():
     today = datetime.datetime.now()
+    date_dicts = []
+    date_map = {}
     dates = []
     for d in range(0, 9):
         date = today + datetime.timedelta(days=d)
@@ -34,14 +36,41 @@ def api_dates_list():
             date_name = util.colloquial_date_lookup[d]
         else:
             date_name = util.weekday_lookup[date.weekday()]
-        dates.append({
-            'key': 'date-item-{index}'.format(index=d),
-            'date': date,
+        date_formatted = date.strftime('%Y-%m-%d')
+        dates.append(date_formatted)
+        date_map[date_formatted] = d
+        date_dicts.append({
+            'key': 'date-{d}'.format(d=date_formatted),
+            'date': date_formatted,
             'date_string': date.strftime('%B %d, %Y'),
             'title': date_name,
             'description': 'Description for item {index}'.format(index=d)
         })
-    return jsonify(dates)
+
+    entries = CalenderEntry.query.filter(CalenderEntry.date.in_(dates)).all()
+    for entry in entries:
+        date_dicts[date_map[entry.date_str]]['recipe'] = entry.recipe.as_dict
+
+    return jsonify(date_dicts)
+
+@app.route('/api/dates/<string:date>/edit/', methods=['POST'])
+def api_dates_edit(date):
+    entry = CalenderEntry.query.filter_by(date=date).first()
+    if not entry:
+        entry = CalenderEntry(date=date)
+    entry.recipe_id = request.form.get('id')
+    db_session.add(entry)
+    db_session.commit()
+    return jsonify(entry.as_dict)
+
+@app.route('/api/dates/<string:date>/delete/', methods=['POST'])
+def api_dates_delete(date):
+    entry = CalenderEntry.query.filter_by(date=date).first()
+    db_session.delete(entry)
+    db_session.commit()
+    return jsonify({
+        'success': True
+    })
 
 @app.route('/api/recipes/', methods=['GET'])
 def api_recipes_list():

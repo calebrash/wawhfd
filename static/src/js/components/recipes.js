@@ -185,6 +185,7 @@ class RecipeItem extends Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onDelete = this.onDelete.bind(this);
+        this.onDragStart = this.onDragStart.bind(this);
         this.startEditing = this.startEditing.bind(this);
         this.cancelEditing = this.cancelEditing.bind(this);
         this.inputHandler = this.inputHandler.bind(this);
@@ -198,6 +199,9 @@ class RecipeItem extends Component {
     }
     onDelete () {
         this.props.recipeStore.delete(this.state);
+    }
+    onDragStart (e) {
+        e.dataTransfer.setData('text/plain', JSON.stringify(this.state));
     }
     inputHandler (field) {
         return (e) => {
@@ -261,7 +265,7 @@ class RecipeItem extends Component {
             );
         } else {
             return (
-                <li className="recipe row" onClick={this.startEditing} draggable="true">
+                <li className="recipe row" onClick={this.startEditing} draggable="true" onDragStart={this.onDragStart}>
                     <h4>{this.props.data.name}</h4>
                     {this.getDescription()}
                     {this.getLink()}
