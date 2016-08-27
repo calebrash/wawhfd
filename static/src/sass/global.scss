@@ -1,5 +1,6 @@
 body {
     color: $black;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: $base-font-size;
     line-height: $base-line-height;
     * {
@@ -59,17 +60,16 @@ a {
 }
 
 .logo {
-    $logo-size: 100px;
     display: block;
     position: fixed;
     top: $padding-large;
     left: $padding-large;
     width: $logo-size;
     height: $logo-size;
+    border: 1px solid $black;
     line-height: $logo-size;
     text-align: center;
-    background: $black;
-    color: $white;
+    color: $black;
     &:hover {
         background: $gray-dark;
         color: $white;

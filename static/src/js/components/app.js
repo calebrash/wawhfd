@@ -29,20 +29,20 @@ export default class App extends Component {
         if (this.state.calenderData !== null) {
             return <CalenderList data={this.state.calenderData} />;
         } else {
-            return <div className="calender">loading...</div>;
+            return <div className="calender loading">...</div>;
         }
     }
     getRecipes () {
         if (this.state.recipeData !== null) {
             return <RecipeList data={this.state.recipeData} />;
         } else {
-            return <div className="recipes loading">loading...</div>;
+            return <div className="recipes loading">...</div>;
         }
     }
     render () {
         return (
             <div>
-                <a href="/" className="logo">C8O</a>
+                <a href="/" className="logo">wawhfd.</a>
                 {this.getCalender()}
                 {this.getRecipes()}
             </div>

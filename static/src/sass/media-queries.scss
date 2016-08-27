@@ -1,0 +1,33 @@
+@media screen and (max-width: 1280px) {
+    .calender {
+        @include calender-padding(2);
+    }
+}
+
+@media screen and (max-width: 880px) {
+    .logo {
+        display: none;
+    }
+    .calender {
+        float: left;
+        clear: left;
+        margin: 0;
+        padding-left: $padding-large;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .recipes {
+        display: none;
+    }
+    .calender {
+        padding: $padding-medium;
+        h2 {
+            font-size: 1.5em;
+            text-align: left;
+        }
+        .recipe {
+            text-align: left;
+        }
+    }
+}

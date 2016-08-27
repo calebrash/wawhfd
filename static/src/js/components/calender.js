@@ -19,17 +19,23 @@ class CalenderItem extends Component {
         this.onDragLeave = this.onDragLeave.bind(this);
         this.onDrop = this.onDrop.bind(this);
         this.onClickDelete = this.onClickDelete.bind(this);
+
+        this.dragCounter = 0;
     }
     onDragEnter (e) {
         e.preventDefault();
+        this.dragCounter ++;
         this.setState({
             over: true
         });
     }
     onDragLeave (e) {
-        this.setState({
-            over: false
-        });
+        this.dragCounter --;
+        if (this.dragCounter === 0) {
+            this.setState({
+                over: false
+            });
+        }
     }
     onDragOver (e) {
         e.preventDefault();
@@ -70,12 +76,14 @@ class CalenderItem extends Component {
     }
     render () {
         return (
-            <div className={this.getClassNames()}>
-                <h2>{this.state.title}<small>{this.state.date_string}</small></h2>
-                <div className="drop-target" onDragEnter={this.onDragEnter} onDragLeave={this.onDragLeave} onDragOver={this.onDragOver} onDrop={this.onDrop}>
+            <div className={this.getClassNames()} onDragEnter={this.onDragEnter} onDragLeave={this.onDragLeave}>
+                <h2 title={this.state.date_string}>{this.state.title}</h2>
+                <div className="drop-target" onDragOver={this.onDragOver} onDrop={this.onDrop}>
                     Drop recipe here
                 </div>
-                <div className="content">{this.renderReceipe()}</div>
+                <div className="recipe">
+                    {this.renderReceipe()}
+                </div>
             </div>
         );
     }
