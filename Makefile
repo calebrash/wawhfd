@@ -1,8 +1,9 @@
+build:
+	pip3 install -r requirements.txt
+	npm install
+
 dev:
 	webpack -d --watch
-
-build:
-	webpack -p
 
 server:
 	python3 app.py

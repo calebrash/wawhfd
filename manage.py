@@ -6,9 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from app import app
 import config
 
+
 db = SQLAlchemy(app)
-
-
 migrate = Migrate(app, db)
 manager = Manager(app)
 

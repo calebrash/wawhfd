@@ -1,5 +1,5 @@
 FLASK_HOST = 'localhost'
 FLASK_PORT = 5000
 
-SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/calejandro'
+SQLALCHEMY_DATABASE_URI = 'postgresql://localhost/wawhfd'
 SQLALCHEMY_TRACK_MODIFICATIONS = True

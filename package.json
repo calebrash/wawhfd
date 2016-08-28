@@ -1,11 +1,10 @@
 {
-  "name": "calejandro",
+  "name": "wawhfd",
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
-  "author": "",
-  "license": "ISC",
+  "author": "calebrash",
+  "license": "MIT",
   "dependencies": {
     "babel-core": "~6.13.2",
     "babel-loader": "~6.2.4",
