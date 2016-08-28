@@ -133,7 +133,7 @@ class AddRecipeForm extends Component {
                 <label htmlFor="recipe-new-name">Name</label>
                 <input type="text"
                     id="recipe-new-name"
-                    placeholder="name"
+                    placeholder="Chicken soup"
                     value={this.state.name}
                     onChange={this.inputHandler('name')}
                     autoComplete="off" />
@@ -141,7 +141,7 @@ class AddRecipeForm extends Component {
                 <label htmlFor="recipe-new-description">Description</label>
                 <input type="text"
                     id="recipe-new-description"
-                    placeholder="description"
+                    placeholder="e.g. the one from Food Network"
                     value={this.state.description}
                     onChange={this.inputHandler('description')}
                     autoComplete="off" />
@@ -149,7 +149,7 @@ class AddRecipeForm extends Component {
                 <label htmlFor="recipe-new-link">Link</label>
                 <input type="text"
                     id="recipe-new-link"
-                    placeholder="link"
+                    placeholder="https://recipes.com/chicken-soup/"
                     value={this.state.link}
                     onChange={this.inputHandler('link')}
                     autoComplete="off" />
@@ -264,7 +264,7 @@ class RecipeItem extends Component {
                         <label htmlFor={`recipe-${this.state.id}-name`}>Name</label>
                         <input type="text"
                             id={`recipe-${this.state.id}-name`}
-                            placeholder="Name"
+                            placeholder="Chicken soup"
                             value={this.state.name}
                             onChange={this.inputHandler('name')}
                             autoComplete="off" />
@@ -272,7 +272,7 @@ class RecipeItem extends Component {
                         <label htmlFor={`recipe-${this.state.id}-description`}>Description</label>
                         <input type="text"
                             id={`recipe-${this.state.id}-description`}
-                            placeholder="description"
+                            placeholder="e.g. the one from Food Network"
                             value={this.state.description || ''}
                             onChange={this.inputHandler('description')}
                             autoComplete="off" />
@@ -280,7 +280,7 @@ class RecipeItem extends Component {
                         <label htmlFor={`recipe-${this.state.id}-link`}>Link</label>
                         <input type="text"
                             id={`recipe-${this.state.id}-link`}
-                            placeholder="Link"
+                            placeholder="https://recipes.com/chicken-soup/"
                             value={this.state.link || ''}
                             onChange={this.inputHandler('link')}
                             autoComplete="off" />
