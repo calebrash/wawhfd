@@ -30,7 +30,7 @@ def api_dates_list():
     date_dicts = []
     date_map = {}
     dates = []
-    for d in range(0, 9):
+    for d in range(0, config.WAWHFD_NUM_DATES):
         date = today + datetime.timedelta(days=d)
         if d in (0, 1,):
             date_name = util.colloquial_date_lookup[d]

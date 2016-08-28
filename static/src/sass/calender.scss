@@ -2,6 +2,7 @@
     width: 100%;
     @include calender-padding(8);
     margin: 0 auto;
+    overflow: hidden;
     &.loading {
         text-align: center;
         padding-top: 200px;
