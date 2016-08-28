@@ -22,6 +22,13 @@ class CalenderItem extends Component {
 
         this.dragCounter = 0;
     }
+    componentWillReceiveProps (props) {
+        let data = props.data;
+        if (!props.data.recipe) {
+            data.recipe = null;
+        }
+        this.setState(data);
+    }
     onDragEnter (e) {
         e.preventDefault();
         this.dragCounter ++;
@@ -63,7 +70,7 @@ class CalenderItem extends Component {
         }
         return classes;
     }
-    renderReceipe () {
+    renderRecipe () {
         if (this.state.recipe) {
             return (
                 <p>
@@ -82,7 +89,7 @@ class CalenderItem extends Component {
                     Drop recipe here
                 </div>
                 <div className="recipe">
-                    {this.renderReceipe()}
+                    {this.renderRecipe()}
                 </div>
             </div>
         );

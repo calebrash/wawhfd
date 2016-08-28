@@ -33,6 +33,10 @@ export default class RecipeList extends Component {
         });
     }
     getRecipeStore () {
+        let genericResponseHandler = (response) => {
+            canonicalRecipes = response;
+            this.props.updateHandler(canonicalRecipes);
+        };
         return {
             cancelAdding: () => this.setState({
                 isAdding: false
@@ -47,20 +51,10 @@ export default class RecipeList extends Component {
                 });
             },
             edit: (recipe) => {
-                api.post(`recipes/${recipe.id}/edit`, recipe).then((response) => {
-                    canonicalRecipes = response;
-                    this.setState({
-                        recipes: filteredCanonicalRecipes()
-                    });
-                });
+                api.post(`recipes/${recipe.id}/edit`, recipe).then(genericResponseHandler);
             },
             delete: (recipe) => {
-                api.post(`recipes/${recipe.id}/delete`, recipe).then((response) => {
-                    canonicalRecipes = response;
-                    this.setState({
-                        recipes: filteredCanonicalRecipes()
-                    });
-                });
+                api.post(`recipes/${recipe.id}/delete`, recipe).then(genericResponseHandler);
             },
             search: (text) => {
                 currentFilterText = text.toLowerCase();
@@ -92,7 +86,9 @@ export default class RecipeList extends Component {
         return (
             <div className="recipes">
                 <header className="recipes-header">
-                    <button className={this.getAddButtonClassName()} onClick={this.startAdding}>Add recipe</button>
+                    <button className={this.getAddButtonClassName()} onClick={this.startAdding}>
+                        Add recipe
+                    </button>
                     <h2>Recipes</h2>
                 </header>
                 {this.getAddRecipeForm()}
@@ -135,13 +131,28 @@ class AddRecipeForm extends Component {
         return (
             <form action="#" method="POST" onSubmit={this.onSubmit} className="recipes-add">
                 <label htmlFor="recipe-new-name">Name</label>
-                <input type="text" id="recipe-new-name" placeholder="name" value={this.state.name} onChange={this.inputHandler('name')} autoComplete="off" />
+                <input type="text"
+                    id="recipe-new-name"
+                    placeholder="name"
+                    value={this.state.name}
+                    onChange={this.inputHandler('name')}
+                    autoComplete="off" />
 
                 <label htmlFor="recipe-new-description">Description</label>
-                <input type="text" id="recipe-new-description" placeholder="description" value={this.state.description} onChange={this.inputHandler('description')} autoComplete="off" />
+                <input type="text"
+                    id="recipe-new-description"
+                    placeholder="description"
+                    value={this.state.description}
+                    onChange={this.inputHandler('description')}
+                    autoComplete="off" />
 
                 <label htmlFor="recipe-new-link">Link</label>
-                <input type="text" id="recipe-new-link" placeholder="link" value={this.state.link} onChange={this.inputHandler('link')} autoComplete="off" />
+                <input type="text"
+                    id="recipe-new-link"
+                    placeholder="link"
+                    value={this.state.link}
+                    onChange={this.inputHandler('link')}
+                    autoComplete="off" />
 
                 <div className="row">
                     <button className="btn">Save</button>
@@ -170,7 +181,11 @@ class RecipeSearchInput extends Component {
     render () {
         return (
             <div className="recipe-search">
-                <input type="text" placeholder="Search" value={this.state.value} onInput={this.onInput} autoComplete="off" />
+                <input type="text"
+                    placeholder="Search"
+                    value={this.state.value}
+                    onInput={this.onInput}
+                    autoComplete="off" />
             </div>
         );
     }
@@ -247,13 +262,28 @@ class RecipeItem extends Component {
                 <li className="recipe row form">
                     <form action="#" method="POST" onSubmit={this.onSubmit}>
                         <label htmlFor={`recipe-${this.state.id}-name`}>Name</label>
-                        <input type="text" id={`recipe-${this.state.id}-name`} placeholder="Name" value={this.state.name} onChange={this.inputHandler('name')} autoComplete="off" />
+                        <input type="text"
+                            id={`recipe-${this.state.id}-name`}
+                            placeholder="Name"
+                            value={this.state.name}
+                            onChange={this.inputHandler('name')}
+                            autoComplete="off" />
 
                         <label htmlFor={`recipe-${this.state.id}-description`}>Description</label>
-                        <input type="text" id={`recipe-${this.state.id}-description`} placeholder="description" value={this.state.description || ''} onChange={this.inputHandler('description')} autoComplete="off" />
+                        <input type="text"
+                            id={`recipe-${this.state.id}-description`}
+                            placeholder="description"
+                            value={this.state.description || ''}
+                            onChange={this.inputHandler('description')}
+                            autoComplete="off" />
 
                         <label htmlFor={`recipe-${this.state.id}-link`}>Link</label>
-                        <input type="text" id={`recipe-${this.state.id}-link`} placeholder="Link" value={this.state.link || ''} onChange={this.inputHandler('link')} autoComplete="off" />
+                        <input type="text"
+                            id={`recipe-${this.state.id}-link`}
+                            placeholder="Link"
+                            value={this.state.link || ''}
+                            onChange={this.inputHandler('link')}
+                            autoComplete="off" />
 
                         <div className="row">
                             <button className="btn">Save</button>

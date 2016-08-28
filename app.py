@@ -99,8 +99,11 @@ def api_recipes_edit(recipe_id):
 @app.route('/api/recipes/<int:recipe_id>/delete/', methods=['POST'])
 def api_recipes_delete(recipe_id):
     recipe = Recipe.query.filter_by(id=recipe_id).first()
+    entries = CalenderEntry.query.filter_by(recipe_id=recipe_id)
     recipe.deleted = True
     db_session.add(recipe)
+    for entry in entries:
+        db_session.delete(entry)
     db_session.commit()
     return jsonify(util.json_for_model(Recipe))
 

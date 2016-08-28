@@ -12,18 +12,35 @@ export default class App extends Component {
             calenderData: null,
             recipeData: null
         };
+        this.refreshCalender = this.refreshCalender.bind(this);
     }
     componentDidMount () {
-        api.get('dates')
-            .then((response) => this.setState({
+        this.refreshCalender();
+        this.refreshRecipes();
+    }
+    refreshCalender (handler) {
+        if (!handler) {
+            handler = (response) => this.setState({
                 calenderData: response
-            }));
-
-        api.get('recipes')
-            .then((response) => this.setState({
-                requestedData: true,
-                recipeData: response
-            }));
+            });
+        }
+        api.get('dates').then(handler);
+    }
+    updateHandler () {
+        return (recipeData) => {
+            this.refreshCalender((response) => {
+                this.setState({
+                    calenderData: response,
+                    recipeData: recipeData
+                })
+            });
+        };
+    }
+    refreshRecipes () {
+        api.get('recipes').then((response) => this.setState({
+            requestedData: true,
+            recipeData: response
+        }));
     }
     getCalender () {
         if (this.state.calenderData !== null) {
@@ -34,7 +51,7 @@ export default class App extends Component {
     }
     getRecipes () {
         if (this.state.recipeData !== null) {
-            return <RecipeList data={this.state.recipeData} />;
+            return <RecipeList data={this.state.recipeData} updateHandler={this.updateHandler()} />;
         } else {
             return <div className="recipes loading">...</div>;
         }

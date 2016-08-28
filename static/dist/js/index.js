@@ -22044,22 +22044,51 @@
 	            calenderData: null,
 	            recipeData: null
 	        };
+	        _this.refreshCalender = _this.refreshCalender.bind(_this);
 	        return _this;
 	    }
 	
 	    _createClass(App, [{
 	        key: 'componentDidMount',
 	        value: function componentDidMount() {
+	            this.refreshCalender();
+	            this.refreshRecipes();
+	        }
+	    }, {
+	        key: 'refreshCalender',
+	        value: function refreshCalender(handler) {
 	            var _this2 = this;
 	
-	            _api2.default.get('dates').then(function (response) {
-	                return _this2.setState({
-	                    calenderData: response
+	            if (!handler) {
+	                handler = function handler(response) {
+	                    return _this2.setState({
+	                        calenderData: response
+	                    });
+	                };
+	            }
+	            _api2.default.get('dates').then(handler);
+	        }
+	    }, {
+	        key: 'updateHandler',
+	        value: function updateHandler() {
+	            var _this3 = this;
+	
+	            return function (recipeData) {
+	                _this3.refreshCalender(function (response) {
+	                    _this3.setState({
+	                        calenderData: response,
+	                        recipeData: recipeData
+	                    });
 	                });
-	            });
+	            };
+	        }
+	    }, {
+	        key: 'refreshRecipes',
+	        value: function refreshRecipes() {
+	            var _this4 = this;
 	
 	            _api2.default.get('recipes').then(function (response) {
-	                return _this2.setState({
+	                return _this4.setState({
 	                    requestedData: true,
 	                    recipeData: response
 	                });
@@ -22082,7 +22111,7 @@
 	        key: 'getRecipes',
 	        value: function getRecipes() {
 	            if (this.state.recipeData !== null) {
-	                return _react2.default.createElement(_recipes2.default, { data: this.state.recipeData });
+	                return _react2.default.createElement(_recipes2.default, { data: this.state.recipeData, updateHandler: this.updateHandler() });
 	            } else {
 	                return _react2.default.createElement(
 	                    'div',
@@ -22256,6 +22285,15 @@
 	    }
 	
 	    _createClass(CalenderItem, [{
+	        key: 'componentWillReceiveProps',
+	        value: function componentWillReceiveProps(props) {
+	            var data = props.data;
+	            if (!props.data.recipe) {
+	                data.recipe = null;
+	            }
+	            this.setState(data);
+	        }
+	    }, {
 	        key: 'onDragEnter',
 	        value: function onDragEnter(e) {
 	            e.preventDefault();
@@ -22309,8 +22347,8 @@
 	            return classes;
 	        }
 	    }, {
-	        key: 'renderReceipe',
-	        value: function renderReceipe() {
+	        key: 'renderRecipe',
+	        value: function renderRecipe() {
 	            if (this.state.recipe) {
 	                return _react2.default.createElement(
 	                    'p',
@@ -22344,7 +22382,7 @@
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'recipe' },
-	                    this.renderReceipe()
+	                    this.renderRecipe()
 	                )
 	            );
 	        }
@@ -22433,6 +22471,10 @@
 	        value: function getRecipeStore() {
 	            var _this2 = this;
 	
+	            var genericResponseHandler = function genericResponseHandler(response) {
+	                canonicalRecipes = response;
+	                _this2.props.updateHandler(canonicalRecipes);
+	            };
 	            return {
 	                cancelAdding: function cancelAdding() {
 	                    return _this2.setState({
@@ -22449,20 +22491,10 @@
 	                    });
 	                },
 	                edit: function edit(recipe) {
-	                    _api2.default.post('recipes/' + recipe.id + '/edit', recipe).then(function (response) {
-	                        canonicalRecipes = response;
-	                        _this2.setState({
-	                            recipes: filteredCanonicalRecipes()
-	                        });
-	                    });
+	                    _api2.default.post('recipes/' + recipe.id + '/edit', recipe).then(genericResponseHandler);
 	                },
 	                delete: function _delete(recipe) {
-	                    _api2.default.post('recipes/' + recipe.id + '/delete', recipe).then(function (response) {
-	                        canonicalRecipes = response;
-	                        _this2.setState({
-	                            recipes: filteredCanonicalRecipes()
-	                        });
-	                    });
+	                    _api2.default.post('recipes/' + recipe.id + '/delete', recipe).then(genericResponseHandler);
 	                },
 	                search: function search(text) {
 	                    currentFilterText = text.toLowerCase();
@@ -22584,19 +22616,34 @@
 	                    { htmlFor: 'recipe-new-name' },
 	                    'Name'
 	                ),
-	                _react2.default.createElement('input', { type: 'text', id: 'recipe-new-name', placeholder: 'name', value: this.state.name, onChange: this.inputHandler('name'), autoComplete: 'off' }),
+	                _react2.default.createElement('input', { type: 'text',
+	                    id: 'recipe-new-name',
+	                    placeholder: 'name',
+	                    value: this.state.name,
+	                    onChange: this.inputHandler('name'),
+	                    autoComplete: 'off' }),
 	                _react2.default.createElement(
 	                    'label',
 	                    { htmlFor: 'recipe-new-description' },
 	                    'Description'
 	                ),
-	                _react2.default.createElement('input', { type: 'text', id: 'recipe-new-description', placeholder: 'description', value: this.state.description, onChange: this.inputHandler('description'), autoComplete: 'off' }),
+	                _react2.default.createElement('input', { type: 'text',
+	                    id: 'recipe-new-description',
+	                    placeholder: 'description',
+	                    value: this.state.description,
+	                    onChange: this.inputHandler('description'),
+	                    autoComplete: 'off' }),
 	                _react2.default.createElement(
 	                    'label',
 	                    { htmlFor: 'recipe-new-link' },
 	                    'Link'
 	                ),
-	                _react2.default.createElement('input', { type: 'text', id: 'recipe-new-link', placeholder: 'link', value: this.state.link, onChange: this.inputHandler('link'), autoComplete: 'off' }),
+	                _react2.default.createElement('input', { type: 'text',
+	                    id: 'recipe-new-link',
+	                    placeholder: 'link',
+	                    value: this.state.link,
+	                    onChange: this.inputHandler('link'),
+	                    autoComplete: 'off' }),
 	                _react2.default.createElement(
 	                    'div',
 	                    { className: 'row' },
@@ -22648,7 +22695,11 @@
 	            return _react2.default.createElement(
 	                'div',
 	                { className: 'recipe-search' },
-	                _react2.default.createElement('input', { type: 'text', placeholder: 'Search', value: this.state.value, onInput: this.onInput, autoComplete: 'off' })
+	                _react2.default.createElement('input', { type: 'text',
+	                    placeholder: 'Search',
+	                    value: this.state.value,
+	                    onInput: this.onInput,
+	                    autoComplete: 'off' })
 	            );
 	        }
 	    }]);
@@ -22768,19 +22819,34 @@
 	                            { htmlFor: 'recipe-' + this.state.id + '-name' },
 	                            'Name'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', id: 'recipe-' + this.state.id + '-name', placeholder: 'Name', value: this.state.name, onChange: this.inputHandler('name'), autoComplete: 'off' }),
+	                        _react2.default.createElement('input', { type: 'text',
+	                            id: 'recipe-' + this.state.id + '-name',
+	                            placeholder: 'Name',
+	                            value: this.state.name,
+	                            onChange: this.inputHandler('name'),
+	                            autoComplete: 'off' }),
 	                        _react2.default.createElement(
 	                            'label',
 	                            { htmlFor: 'recipe-' + this.state.id + '-description' },
 	                            'Description'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', id: 'recipe-' + this.state.id + '-description', placeholder: 'description', value: this.state.description || '', onChange: this.inputHandler('description'), autoComplete: 'off' }),
+	                        _react2.default.createElement('input', { type: 'text',
+	                            id: 'recipe-' + this.state.id + '-description',
+	                            placeholder: 'description',
+	                            value: this.state.description || '',
+	                            onChange: this.inputHandler('description'),
+	                            autoComplete: 'off' }),
 	                        _react2.default.createElement(
 	                            'label',
 	                            { htmlFor: 'recipe-' + this.state.id + '-link' },
 	                            'Link'
 	                        ),
-	                        _react2.default.createElement('input', { type: 'text', id: 'recipe-' + this.state.id + '-link', placeholder: 'Link', value: this.state.link || '', onChange: this.inputHandler('link'), autoComplete: 'off' }),
+	                        _react2.default.createElement('input', { type: 'text',
+	                            id: 'recipe-' + this.state.id + '-link',
+	                            placeholder: 'Link',
+	                            value: this.state.link || '',
+	                            onChange: this.inputHandler('link'),
+	                            autoComplete: 'off' }),
 	                        _react2.default.createElement(
 	                            'div',
 	                            { className: 'row' },
