@@ -1,8 +1,8 @@
 var webpack = require('webpack');
 var path = require('path');
 
-var BUILD_DIR = path.resolve(__dirname, 'static/dist');
-var APP_DIR = path.resolve(__dirname, 'static/src');
+var BUILD_DIR = path.resolve(__dirname, 'wawhfd/static/dist');
+var APP_DIR = path.resolve(__dirname, 'wawhfd/static/src');
 
 module.exports = {
     entry: APP_DIR + '/js/index.js',

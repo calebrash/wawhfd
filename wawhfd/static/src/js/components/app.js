@@ -21,7 +21,7 @@ export default class App extends Component {
     refreshCalender (handler) {
         if (!handler) {
             handler = (response) => this.setState({
-                calenderData: response
+                calenderData: response.data
             });
         }
         api.get('dates').then(handler);
@@ -30,7 +30,7 @@ export default class App extends Component {
         return (recipeData) => {
             this.refreshCalender((response) => {
                 this.setState({
-                    calenderData: response,
+                    calenderData: response.data,
                     recipeData: recipeData
                 })
             });
@@ -39,7 +39,7 @@ export default class App extends Component {
     refreshRecipes () {
         api.get('recipes').then((response) => this.setState({
             requestedData: true,
-            recipeData: response
+            recipeData: response.data
         }));
     }
     getCalender () {

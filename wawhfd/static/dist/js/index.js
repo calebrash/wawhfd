@@ -42,9 +42,9 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/*!********************************!*\
-  !*** ./static/src/js/index.js ***!
-  \********************************/
+/*!***************************************!*\
+  !*** ./wawhfd/static/src/js/index.js ***!
+  \***************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -21995,9 +21995,9 @@
 
 /***/ },
 /* 175 */
-/*!*****************************************!*\
-  !*** ./static/src/js/components/app.js ***!
-  \*****************************************/
+/*!************************************************!*\
+  !*** ./wawhfd/static/src/js/components/app.js ***!
+  \************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22062,7 +22062,7 @@
 	            if (!handler) {
 	                handler = function handler(response) {
 	                    return _this2.setState({
-	                        calenderData: response
+	                        calenderData: response.data
 	                    });
 	                };
 	            }
@@ -22076,7 +22076,7 @@
 	            return function (recipeData) {
 	                _this3.refreshCalender(function (response) {
 	                    _this3.setState({
-	                        calenderData: response,
+	                        calenderData: response.data,
 	                        recipeData: recipeData
 	                    });
 	                });
@@ -22090,7 +22090,7 @@
 	            _api2.default.get('recipes').then(function (response) {
 	                return _this4.setState({
 	                    requestedData: true,
-	                    recipeData: response
+	                    recipeData: response.data
 	                });
 	            });
 	        }
@@ -22144,9 +22144,9 @@
 
 /***/ },
 /* 176 */
-/*!******************************!*\
-  !*** ./static/src/js/api.js ***!
-  \******************************/
+/*!*************************************!*\
+  !*** ./wawhfd/static/src/js/api.js ***!
+  \*************************************/
 /***/ function(module, exports) {
 
 	'use strict';
@@ -22158,6 +22158,16 @@
 	    return Object.keys(dict).map(function (d) {
 	        return d + '=' + encodeURIComponent(dict[d]);
 	    }).join('&');
+	};
+	
+	function csrfToken() {
+	    var token = void 0;
+	    document.cookie.split(';').forEach(function (cookie) {
+	        if (cookie.indexOf('csrftoken') >= 0) {
+	            token = cookie.split('=')[1].trim();
+	        }
+	    });
+	    return token || null;
 	};
 	
 	function makeRequest(endpoint, method, data) {
@@ -22173,6 +22183,7 @@
 	        xhr.open(method, url, true);
 	        if (method === 'POST') {
 	            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+	            xhr.setRequestHeader('X-CSRFToken', csrfToken());
 	        }
 	        xhr.send(params);
 	
@@ -22204,9 +22215,9 @@
 
 /***/ },
 /* 177 */
-/*!**********************************************!*\
-  !*** ./static/src/js/components/calender.js ***!
-  \**********************************************/
+/*!*****************************************************!*\
+  !*** ./wawhfd/static/src/js/components/calender.js ***!
+  \*****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22393,9 +22404,9 @@
 
 /***/ },
 /* 178 */
-/*!*********************************************!*\
-  !*** ./static/src/js/components/recipes.js ***!
-  \*********************************************/
+/*!****************************************************!*\
+  !*** ./wawhfd/static/src/js/components/recipes.js ***!
+  \****************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -22472,7 +22483,7 @@
 	            var _this2 = this;
 	
 	            var genericResponseHandler = function genericResponseHandler(response) {
-	                canonicalRecipes = response;
+	                canonicalRecipes = response.data;
 	                _this2.props.updateHandler(canonicalRecipes);
 	            };
 	            return {
@@ -22483,7 +22494,7 @@
 	                },
 	                add: function add(recipe) {
 	                    _api2.default.post('recipes/add', recipe).then(function (response) {
-	                        canonicalRecipes = response;
+	                        canonicalRecipes = response.data;
 	                        _this2.setState({
 	                            recipes: canonicalRecipes,
 	                            isAdding: false
@@ -22889,25 +22900,25 @@
 
 /***/ },
 /* 179 */
-/*!************************************!*\
-  !*** ./static/src/sass/index.scss ***!
-  \************************************/
+/*!*******************************************!*\
+  !*** ./wawhfd/static/src/sass/index.scss ***!
+  \*******************************************/
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(/*! !./../../../~/css-loader!./../../../~/sass-loader!./index.scss */ 180);
+	var content = __webpack_require__(/*! !./../../../../~/css-loader!./../../../../~/sass-loader!./index.scss */ 180);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(/*! ./../../../~/style-loader/addStyles.js */ 182)(content, {});
+	var update = __webpack_require__(/*! ./../../../../~/style-loader/addStyles.js */ 182)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/sass-loader/index.js!./index.scss", function() {
-				var newContent = require("!!./../../../node_modules/css-loader/index.js!./../../../node_modules/sass-loader/index.js!./index.scss");
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/sass-loader/index.js!./index.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../../../../node_modules/sass-loader/index.js!./index.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -22918,12 +22929,12 @@
 
 /***/ },
 /* 180 */
-/*!*******************************************************************!*\
-  !*** ./~/css-loader!./~/sass-loader!./static/src/sass/index.scss ***!
-  \*******************************************************************/
+/*!**************************************************************************!*\
+  !*** ./~/css-loader!./~/sass-loader!./wawhfd/static/src/sass/index.scss ***!
+  \**************************************************************************/
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(/*! ./../../../~/css-loader/lib/css-base.js */ 181)();
+	exports = module.exports = __webpack_require__(/*! ./../../../../~/css-loader/lib/css-base.js */ 181)();
 	// imports
 	
 	

@@ -1,3 +1,5 @@
+{% load static %}
+
 <!ODCTYPE html>
 <html>
     <head>
@@ -6,6 +8,7 @@
     </head>
     <body>
         <div id="app"></div>
-        <script src="{{ url_for('static', filename='dist/js/index.js') }}"></script>
+        {% csrf_token %}
+        <script src="{% static 'dist/js/index.js' %}"></script>
     </body>
 </html>

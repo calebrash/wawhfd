@@ -1,3 +1,5 @@
+DATE_STRING_FORMAT = '%Y-%m-%d'
+
 def get_key(name, id):
     return '{name}-{id}'.format(name=name, id=id)
 

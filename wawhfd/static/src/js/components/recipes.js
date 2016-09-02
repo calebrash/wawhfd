@@ -34,7 +34,7 @@ export default class RecipeList extends Component {
     }
     getRecipeStore () {
         let genericResponseHandler = (response) => {
-            canonicalRecipes = response;
+            canonicalRecipes = response.data;
             this.props.updateHandler(canonicalRecipes);
         };
         return {
@@ -43,7 +43,7 @@ export default class RecipeList extends Component {
             }),
             add: (recipe) => {
                 api.post('recipes/add', recipe).then((response) => {
-                    canonicalRecipes = response;
+                    canonicalRecipes = response.data;
                     this.setState({
                         recipes: canonicalRecipes,
                         isAdding: false
