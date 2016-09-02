@@ -3,17 +3,20 @@ DATE_STRING_FORMAT = '%Y-%m-%d'
 def get_key(name, id):
     return '{name}-{id}'.format(name=name, id=id)
 
-def json_for_model(ModelClass):
-    return [
-        m.as_dict for m in ModelClass.query.filter_by(deleted=False).order_by(ModelClass.id.asc())
-    ]
+def error_response(message):
+    return JsonResponse({'error': message})
 
-colloquial_date_lookup = (
+def model_list_response(Model, **kwargs):
+    return JsonResponse({
+        'data': [item.as_dict for item in Model.objects.filter(**kwargs)]
+    })
+
+COLLOQUIAL_DATE_LOOKUP = (
     'Today',
     'Tomorrow',
 )
 
-weekday_lookup = (
+WEEKDAY_LOOKUP = (
     'Monday',
     'Tuesday',
     'Wednesday',

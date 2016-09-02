@@ -6,7 +6,13 @@ from django.http import JsonResponse
 from django.conf import settings
 
 from wawhfd.models import Recipe, CalenderEntry
-from wawhfd.util import colloquial_date_lookup, weekday_lookup, DATE_STRING_FORMAT
+from wawhfd.util import (
+    COLLOQUIAL_DATE_LOOKUP,
+    WEEKDAY_LOOKUP,
+    DATE_STRING_FORMAT,
+    error_response,
+    model_list_response,
+)
 
 
 class IndexView(View):
@@ -67,14 +73,6 @@ class DatesDeleteView(View):
         return JsonResponse({
             'success': True
         })
-
-def error_response(message):
-    return JsonResponse({'error': message})
-
-def model_list_response(Model, **kwargs):
-    return JsonResponse({
-        'data': [item.as_dict for item in Model.objects.filter(**kwargs)]
-    })
 
 class RecipesListView(View):
     def get(self, request):
