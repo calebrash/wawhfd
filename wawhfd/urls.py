@@ -16,7 +16,6 @@ from wawhfd.views import (
 urlpatterns = [
     url(r'^$', IndexView.as_view()),
 
-# blah/00-00-0000/lsadfljk/
     url(r'^api/dates/$', DatesListView.as_view()),
     url(r'^api/dates/(?P<date_str>[\d]{4}-[\d]{2}-[\d]{2})/edit/$', DatesEditView.as_view()),
     url(r'^api/dates/(?P<date_str>[\d]{4}-[\d]{2}-[\d]{2})/delete/$', DatesDeleteView.as_view()),
