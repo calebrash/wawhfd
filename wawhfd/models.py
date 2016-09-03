@@ -1,5 +1,9 @@
 from django.db import models
-from wawhfd.util import get_key, DATE_STRING_FORMAT
+from wawhfd.constants import DATE_STRING_FORMAT
+
+
+def get_key(name, id):
+    return '{name}-{id}'.format(name=name, id=id)
 
 class Recipe(models.Model):
     name = models.CharField(max_length=255)

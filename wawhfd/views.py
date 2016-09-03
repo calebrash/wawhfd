@@ -6,14 +6,22 @@ from django.http import JsonResponse
 from django.conf import settings
 
 from wawhfd.models import Recipe, CalenderEntry
-from wawhfd.util import (
-    COLLOQUIAL_DATE_LOOKUP,
-    WEEKDAY_LOOKUP,
-    DATE_STRING_FORMAT,
-    error_response,
-    model_list_response,
-)
+from wawhfd.constants import COLLOQUIAL_DATE_LOOKUP, WEEKDAY_LOOKUP, DATE_STRING_FORMAT
 
+def error_response(message, status=500):
+    return JsonResponse({
+        'error': message,
+    }, status=status)
+
+def recipe_list_response():
+    recipes = (
+        Recipe.objects.filter(deleted=False)
+        .extra(select={'iname': 'lower(name)'})
+        .order_by('iname')
+    )
+    return JsonResponse({
+        'data': [item.as_dict for item in recipes]
+    })
 
 class IndexView(View):
     def get(self, request):
@@ -29,9 +37,9 @@ class DatesListView(View):
         for d in range(0, settings.WAWHFD_NUM_DATES):
             date = today + datetime.timedelta(days=d)
             if d in (0, 1,):
-                date_name = colloquial_date_lookup[d]
+                date_name = COLLOQUIAL_DATE_LOOKUP[d]
             else:
-                date_name = weekday_lookup[date.weekday()]
+                date_name = WEEKDAY_LOOKUP[date.weekday()]
             date_formatted = date.strftime(DATE_STRING_FORMAT)
             dates.append(date_formatted)
             date_map[date_formatted] = d
@@ -68,7 +76,7 @@ class DatesDeleteView(View):
         try:
             entry = CalenderEntry.objects.get(date=date_str)
         except CalenderEntry.DoesNotExist:
-            return error_response('Date {date} does not exist'.format(date=date_str))
+            return error_response('Date {date} does not exist'.format(date=date_str), status=404)
         entry.delete()
         return JsonResponse({
             'success': True
@@ -76,7 +84,7 @@ class DatesDeleteView(View):
 
 class RecipesListView(View):
     def get(self, request):
-        return model_list_response(Recipe, deleted=False)
+        return recipe_list_response()
 
 class RecipesAddView(View):
     def post(self, request):
@@ -87,14 +95,14 @@ class RecipesAddView(View):
             recipe.save()
         except:
             return error_response('Could not create recipe')
-        return model_list_response(Recipe, deleted=False)
+        return recipe_list_response()
 
 class RecipesEditView(View):
     def post(self, request, recipe_id):
         try:
             recipe = Recipe.objects.get(id=recipe_id)
         except Recipe.DoesNotExist:
-            return error_response('Recipe {id} does not exist'.format(id=recipe_id))
+            return error_response('Recipe {id} does not exist'.format(id=recipe_id), status=404)
 
         recipe.name = request.POST.get('name')
         recipe.description = request.POST.get('description')
@@ -105,15 +113,15 @@ class RecipesEditView(View):
         except:
             return error_response('Could not update recipe {id}'.format(id=recipe_id))
 
-        return model_list_response(Recipe, deleted=False)
+        return recipe_list_response()
 
 class RecipesDeleteView(View):
     def post(self, request, recipe_id):
         try:
             recipe = Recipe.objects.get(id=recipe_id)
         except Recipe.DoesNotExist:
-            return error_response('Recipe {id} does not exist'.format(id=recipe_id))
+            return error_response('Recipe {id} does not exist'.format(id=recipe_id), status=404)
         recipe.deleted = True
         recipe.save()
         CalenderEntry.objects.filter(recipe_id=recipe_id).delete()
-        return model_list_response(Recipe, deleted=False)
+        return recipe_list_response()
