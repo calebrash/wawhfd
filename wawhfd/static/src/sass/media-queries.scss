@@ -1,6 +1,6 @@
 @media screen and (max-width: 1280px) {
-    .calender {
-        @include calender-padding(2);
+    .calendar {
+        @include calendar-padding(2);
     }
 }
 
@@ -8,7 +8,7 @@
     .logo {
         display: none;
     }
-    .calender {
+    .calendar {
         float: left;
         clear: left;
         margin: 0;
@@ -20,7 +20,7 @@
     .recipes {
         display: none;
     }
-    .calender {
+    .calendar {
         padding: $padding-medium;
         h2 {
             font-size: 1.5em;

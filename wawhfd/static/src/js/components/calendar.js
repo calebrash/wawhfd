@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 import api from '../api';
 
-export default class CalenderList extends Component {
-    getCalenderItems () {
-        return this.props.data.map((d) => <CalenderItem data={d} key={d.key} />);
+export default class CalendarList extends Component {
+    getCalendarItems () {
+        return this.props.data.map((d) => <CalendarItem data={d} key={d.key} />);
     }
     render () {
-        return <div className="calender">{this.getCalenderItems()}</div>;
+        return <div className="calendar">{this.getCalendarItems()}</div>;
     }
 }
 
-class CalenderItem extends Component {
+class CalendarItem extends Component {
     constructor (props) {
         super(props);
         this.state = props.data;
@@ -61,7 +61,7 @@ class CalenderItem extends Component {
         }));
     }
     getClassNames () {
-        let classes = 'calender-item row';
+        let classes = 'calendar-item row';
         if (!this.state.recipe || this.state.over) {
             classes += ' droppable';
         }

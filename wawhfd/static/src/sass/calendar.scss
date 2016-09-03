@@ -1,6 +1,6 @@
-.calender {
+.calendar {
     width: 100%;
-    @include calender-padding(8);
+    @include calendar-padding(8);
     margin: 0 auto;
     overflow: hidden;
     &.loading {
@@ -9,8 +9,8 @@
     }
 }
 
-.calender-item {
-    & + .calender-item {
+.calendar-item {
+    & + .calendar-item {
         margin-top: $padding-large * 1.5;
     }
     &.droppable {

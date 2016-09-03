@@ -25,7 +25,7 @@ class Recipe(models.Model):
             'key': self.key,
         }
 
-class CalenderEntry(models.Model):
+class CalendarEntry(models.Model):
     date = models.DateField()
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
 

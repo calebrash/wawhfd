@@ -18,9 +18,9 @@ $gray-dark: #666;
 $logo-size: 100px;
 $recipes-width: 300px;
 
-@mixin calender-padding($gutter-size) {
-    $calender-gutters: $padding-large * $gutter-size;
-    $padding-right: $recipes-width + $calender-gutters;
-    $padding-left: $logo-size + $padding-large + $calender-gutters;
+@mixin calendar-padding($gutter-size) {
+    $calendar-gutters: $padding-large * $gutter-size;
+    $padding-right: $recipes-width + $calendar-gutters;
+    $padding-left: $logo-size + $padding-large + $calendar-gutters;
     padding: $padding-large $padding-right $padding-large $padding-left;
 }

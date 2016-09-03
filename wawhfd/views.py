@@ -5,7 +5,7 @@ from django.shortcuts import render
 from django.http import JsonResponse
 from django.conf import settings
 
-from wawhfd.models import Recipe, CalenderEntry
+from wawhfd.models import Recipe, CalendarEntry
 from wawhfd.constants import COLLOQUIAL_DATE_LOOKUP, WEEKDAY_LOOKUP, DATE_STRING_FORMAT
 
 def error_response(message, status=500):
@@ -51,7 +51,7 @@ class DatesListView(View):
                 'description': 'Description for item {index}'.format(index=d)
             })
 
-        entries = CalenderEntry.objects.filter(date__in=dates)
+        entries = CalendarEntry.objects.filter(date__in=dates)
         for entry in entries:
             date_dicts[date_map[entry.date_str]]['recipe'] = entry.recipe.as_dict
 
@@ -63,9 +63,9 @@ class DatesEditView(View):
     def post(self, request, date_str):
         date_obj = datetime.datetime.strptime(date_str, DATE_STRING_FORMAT)
         try:
-            entry = CalenderEntry.objects.get(date=date_obj)
-        except CalenderEntry.DoesNotExist:
-            entry = CalenderEntry(date=date_obj)
+            entry = CalendarEntry.objects.get(date=date_obj)
+        except CalendarEntry.DoesNotExist:
+            entry = CalendarEntry(date=date_obj)
         
         entry.recipe_id = request.POST.get('id')
         entry.save()
@@ -74,8 +74,8 @@ class DatesEditView(View):
 class DatesDeleteView(View):
     def post(self, request, date_str):
         try:
-            entry = CalenderEntry.objects.get(date=date_str)
-        except CalenderEntry.DoesNotExist:
+            entry = CalendarEntry.objects.get(date=date_str)
+        except CalendarEntry.DoesNotExist:
             return error_response('Date {date} does not exist'.format(date=date_str), status=404)
         entry.delete()
         return JsonResponse({
@@ -123,5 +123,5 @@ class RecipesDeleteView(View):
             return error_response('Recipe {id} does not exist'.format(id=recipe_id), status=404)
         recipe.deleted = True
         recipe.save()
-        CalenderEntry.objects.filter(recipe_id=recipe_id).delete()
+        CalendarEntry.objects.filter(recipe_id=recipe_id).delete()
         return recipe_list_response()

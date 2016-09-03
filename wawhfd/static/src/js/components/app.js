@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import api from '../api';
-import CalenderList from './calender';
+import CalendarList from './calendar';
 import RecipeList from './recipes';
 
 
@@ -9,28 +9,28 @@ export default class App extends Component {
     constructor (props) {
         super(props);
         this.state = {
-            calenderData: null,
+            calendarData: null,
             recipeData: null
         };
-        this.refreshCalender = this.refreshCalender.bind(this);
+        this.refreshCalendar = this.refreshCalendar.bind(this);
     }
     componentDidMount () {
-        this.refreshCalender();
+        this.refreshCalendar();
         this.refreshRecipes();
     }
-    refreshCalender (handler) {
+    refreshCalendar (handler) {
         if (!handler) {
             handler = (response) => this.setState({
-                calenderData: response.data
+                calendarData: response.data
             });
         }
         api.get('dates').then(handler);
     }
     updateHandler () {
         return (recipeData) => {
-            this.refreshCalender((response) => {
+            this.refreshCalendar((response) => {
                 this.setState({
-                    calenderData: response.data,
+                    calendarData: response.data,
                     recipeData: recipeData
                 })
             });
@@ -42,11 +42,11 @@ export default class App extends Component {
             recipeData: response.data
         }));
     }
-    getCalender () {
-        if (this.state.calenderData !== null) {
-            return <CalenderList data={this.state.calenderData} />;
+    getCalendar () {
+        if (this.state.calendarData !== null) {
+            return <CalendarList data={this.state.calendarData} />;
         } else {
-            return <div className="calender loading">...</div>;
+            return <div className="calendar loading">...</div>;
         }
     }
     getRecipes () {
@@ -60,7 +60,7 @@ export default class App extends Component {
         return (
             <div>
                 <a href="/" className="logo">wawhfd.</a>
-                {this.getCalender()}
+                {this.getCalendar()}
                 {this.getRecipes()}
             </div>
         );
